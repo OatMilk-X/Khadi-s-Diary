@@ -840,7 +840,8 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
             <input type="file" id="avatarFileInput" accept="image/*" style="display:none"></label>
         </div>
         <div class="input-group"><label for="settingsNameInput">Имя</label><input type="text" id="settingsNameInput" class="input-field" placeholder="Ваше имя..."></div>
-        <div class="input-group"><label for="settingsEmailInput">Email (Синхронизация)</label><input type="email" id="settingsEmailInput" class="input-field" disabled style="background:rgba(0,0,0,.03);color:var(--text-sub)"></div>
+        <div class="input-group"><label for="settingsEmailInput">Email (Синхронизация)</label><input type="email" id="settingsEmailInput" class="input-field" disabled style="background:rgba(0,0,0,.03);color:var(--text-sub)" placeholder="Не указан">
+          <button class="link-btn" style="padding:8px 0 0;font-weight:500;text-align:left" id="profileEmailHint" data-act="openSettings" data-section="sync"></button></div>
         <button class="btn-primary" data-act="saveProfile">Сохранить профиль</button>
       </div>
     </div>
@@ -873,7 +874,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
         <div id="syncAccountLine" class="hint" style="margin-top:0"></div>
         <div id="signInBox">
           <div class="input-group"><label for="signInEmail">Email</label><input type="email" id="signInEmail" class="input-field" placeholder="name@example.com" autocomplete="email"></div>
-          <button class="btn-primary" data-act="signIn">Отправить ссылку и код</button>
+          <button class="btn-primary" data-act="signIn">Отправить код</button>
           <div id="otpBox" class="hidden" style="margin-top:14px">
             <div class="hint">Если ссылка открывается не в приложении, введите код из письма:</div>
             <div class="input-group"><label for="otpCode">Код из письма</label><input type="text" id="otpCode" class="input-field" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="12345678"></div>
@@ -904,7 +905,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 4.4.0</div>
+      <div>Версия 4.4.1</div>
     </div>
   </div>
 </main>
@@ -2435,7 +2436,7 @@ function avatarHTML() { const a = lsGet(K.avatar); return /^data:image\/(png|jpe
 function updateProfileUI() {
   renderHeader();
   $('settingsNameInput').value = lsGet(K.name, 'Хади');
-  $('settingsEmailInput').value = session?.user?.email || lsGet(K.email);
+  $('settingsEmailInput').value = session?.user?.email || lsGet(K.email); updateSyncUI(true);
   $('headerAvatarBox').innerHTML = avatarHTML(); $('profileAvatarPreview').innerHTML = avatarHTML(); updatePetUI();
 }
 function saveProfile() {
@@ -2457,11 +2458,17 @@ function resizeImage(file, max = 256) {
 let sb = null, session = null, syncing = false, syncQueued = false, syncTimer = null, pendingEmail = '';
 function setSync(text, offline) { $('syncStatusText').textContent = text; $('syncStatus').classList.toggle('offline', !!offline); const l = $('syncAccountLine'); if (l) updateSyncUI(true); }
 function updateSyncUI(skipBadge) {
-  const email = session?.user?.email;
+  const email = session?.user?.email, saved = lsGet(K.email);
   $('signInBox').classList.toggle('hidden', !!email); $('syncButtons').classList.toggle('hidden', !email);
-  $('syncAccountLine').textContent = email ? `Вы вошли как ${email}. ${$('syncStatusText').textContent}` : 'Войдите по email, чтобы данные синхронизировались между устройствами. Пока вы не вошли — всё хранится только на этом устройстве.';
+  if (!email && saved && !$('signInEmail').value) $('signInEmail').value = saved;
+  const sent = +lsGet('pwa_otp_sent', '0'); if (!email && sent && now() - sent < 3 * 3600e3) $('otpBox').classList.remove('hidden');
+  $('syncAccountLine').textContent = email ? `Вы вошли как ${email}. ${$('syncStatusText').textContent}`
+    : saved ? `Email ${saved} ещё не подтверждён. Нажмите «Отправить код», затем введите код из письма. Пока данные хранятся только на этом устройстве.`
+    : 'Войдите по email, чтобы данные синхронизировались между устройствами. Пока вы не вошли — всё хранится только на этом устройстве.';
   if (!skipBadge && !email) { $('syncStatusText').textContent = sb ? '☁️ Только на этом устройстве' : '⚠️ Облако недоступно (офлайн)'; $('syncStatus').classList.add('offline'); }
-  const el = $('settingsEmailInput'); if (el) el.value = email || lsGet(K.email);
+  const el = $('settingsEmailInput'); if (el) el.value = email || saved;
+  const hint = $('profileEmailHint');
+  if (hint) hint.textContent = email ? '✓ Синхронизация включена' : saved ? 'Не подтверждён — подтвердить в «Синхронизации» ›' : 'Добавить email в «Синхронизации» ›';
 }
 function initSupabase() {
   if (!window.supabase) { updateSyncUI(); return; }
@@ -2517,14 +2524,15 @@ async function syncNow(manual) {
 async function signIn(emailArg) {
   const email = (emailArg ?? $('signInEmail').value).trim().toLowerCase();
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast('Введите корректный email');
-  if (!sb) return toast('Облако недоступно — проверьте интернет');
+  lsSet(K.email, email); updateSyncUI(true);
+  if (!sb) return toast('Email сохранён. Облако недоступно — проверьте интернет и нажмите «Отправить» ещё раз');
   const redirect = /^https?:/.test(location.protocol) ? location.origin + location.pathname : undefined;
   const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirect } });
   if (error) return toast('❌ ' + error.message);
-  pendingEmail = email; $('otpBox').classList.remove('hidden'); toast('✉️ Письмо отправлено — откройте ссылку или введите код');
+  pendingEmail = email; lsSet('pwa_otp_sent', String(now())); $('otpBox').classList.remove('hidden'); toast('✉️ Письмо отправлено — откройте ссылку или введите код');
 }
 async function verifyOtp() {
-  const token = $('otpCode').value.trim(), email = pendingEmail || $('signInEmail').value.trim().toLowerCase();
+  const token = $('otpCode').value.trim(), email = pendingEmail || $('signInEmail').value.trim().toLowerCase() || lsGet(K.email);
   if (!token || !email) return toast('Введите код из письма');
   const { error } = await sb.auth.verifyOtp({ email, token, type: 'email' });
   if (error) return toast('❌ ' + error.message); $('otpCode').value = ''; $('otpBox').classList.add('hidden'); toast('✅ Вы вошли');
@@ -2567,7 +2575,7 @@ function completeOnboarding() {
   lsSet(K.name, $('userNameInput').value.trim() || 'Хади');
   setTimeout(maybeShowAiHint, 1200); lsSet(K.profileTs, String(now())); lsSet(K.onboarded, '1'); const email = $('userEmailInput').value.trim().toLowerCase();
   $('onboardingScreen').classList.add('hidden'); renderAll(); refreshWeather();
-  if (email) { $('signInEmail').value = email; signIn(email); }
+  if (email) { lsSet(K.email, email); $('signInEmail').value = email; updateSyncUI(true); signIn(email); }
 }
 function skipOnboarding() { setTimeout(maybeShowAiHint, 1200); lsSet(K.onboarded, '1'); if (!lsGet(K.name)) lsSet(K.name, 'Хади'); $('onboardingScreen').classList.add('hidden'); renderAll(); refreshWeather(); }
 
