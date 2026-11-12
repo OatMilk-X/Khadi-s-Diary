@@ -1,6 +1,6 @@
 /* Khadi's Diary service worker: offline app shell.
    Bump VERSION whenever you deploy a new index.html. */
-const VERSION = 'v4.4.1';
+const VERSION = 'v4.4.3';
 const CACHE = 'khadis-diary-' + VERSION;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'];
