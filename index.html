@@ -913,7 +913,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 4.5.0</div>
+      <div>Версия 4.5.1</div>
     </div>
   </div>
 </main>
@@ -1363,7 +1363,9 @@ const normEvent = e => {
   let en = isHM(e.endTime) ? e.endTime : fromMin(Math.min(toMin(st) + 60, 1439));
   if (toMin(en) <= toMin(st)) en = fromMin(Math.min(toMin(st) + 60, 1439));
   return { id: e.id ?? uid(), title: String(e.title ?? '').slice(0, 120), category: ['study', 'work', 'gym', 'personal'].includes(e.category) ? e.category : 'study',
-    priority: ['high', 'mid', 'low'].includes(e.priority) ? e.priority : 'mid', ...(e.repeat === false && isYmd(e.date) ? { repeat: false, date: e.date, day: weekdayIdx(parseYmd(e.date)) } : { repeat: true, day: clamp(parseInt(e.day) || 0, 0, 6) }), startTime: st, endTime: en, updatedAt: +e.updatedAt || 0 };
+    priority: ['high', 'mid', 'low'].includes(e.priority) ? e.priority : 'mid', ...(e.repeat === false && isYmd(e.date) ? { repeat: false, date: e.date, day: weekdayIdx(parseYmd(e.date)) } : { repeat: true, day: clamp(parseInt(e.day) || 0, 0, 6) }), startTime: st, endTime: en, updatedAt: +e.updatedAt || 0,
+    ...(typeof e.icon === 'string' && /^[a-z]{2,12}$/.test(e.icon) ? { icon: e.icon } : {}), ...(/^#[0-9a-f]{6}$/i.test(e.color || '') ? { color: e.color } : {}),
+    ...(e.doneDates && typeof e.doneDates === 'object' ? { doneDates: Object.fromEntries(Object.entries(e.doneDates).filter(([d, v]) => isYmd(d) && v).sort().slice(-60)) } : {}) };
 };
 /** Garden state (stored under the old pet key). v1 (animals) → v2 (plants) with a coin refund. */
 const normGarden = p => {
