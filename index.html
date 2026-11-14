@@ -24,7 +24,7 @@
   --sh-sm:5px 5px 12px rgba(var(--sh-c),.18),-5px -5px 12px rgba(255,255,255,.9);
   --sh-in:inset 4px 4px 9px rgba(var(--sh-c),.18),inset -4px -4px 9px rgba(255,255,255,.85);
   --danger:#C4473A; --danger-light:rgba(196,71,58,.1);
-  --cat-study:#8FAE9A; --cat-work:#D4A276; --cat-personal:#C27A62;
+  --cat-study:#8FAE9A; --cat-work:#D4A276; --cat-personal:#C27A62; --cat-gym:#9FB3C4;
   --priority-high:#CF5648; --priority-mid:#E0A45E; --priority-low:#6F9E8F;
 }
 :root[data-theme="sage"]{
@@ -169,7 +169,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 .tt-day.today{background-color:rgba(var(--accent-rgb),.05)}
 .tt-now{position:absolute;left:0;right:0;height:2px;background:var(--accent);z-index:2;pointer-events:none;border-radius:2px}
 .tt-event{position:absolute;background:var(--cat-study);color:#fff;border-radius:10px;padding:4px 6px;font-size:10px;font-weight:600;overflow:hidden;line-height:1.25;border:none;cursor:pointer;text-align:left;z-index:1;box-shadow:0 3px 8px rgba(var(--sh-c),.3)}
-.tt-event.work{background:var(--cat-work)}.tt-event.personal{background:var(--cat-personal)}
+.tt-event.work{background:var(--cat-work)}.tt-event.gym{background:var(--cat-gym)}.tt-event.personal{background:var(--cat-personal)}
 .tt-event-time{font-size:9px;opacity:.92;font-weight:500;display:block}
 .time-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
@@ -284,7 +284,7 @@ svg{max-width:100%;height:auto}
 .ev-time{min-width:58px;font-size:12px;font-weight:600;color:var(--text-main);font-variant-numeric:tabular-nums;line-height:1.3}
 .ev-time small{display:block;font-weight:400;color:var(--text-sub);font-size:11px}
 .ev-bar{width:4px;align-self:stretch;border-radius:2px;background:var(--cat-study);flex-shrink:0}
-.ev-bar.work{background:var(--cat-work)}.ev-bar.personal{background:var(--cat-personal)}
+.ev-bar.work{background:var(--cat-work)}.ev-bar.gym{background:var(--cat-gym)}.ev-bar.personal{background:var(--cat-personal)}
 .day-sub{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--text-sub);margin:6px 0 2px}
 
 /* ---------- mini timer ---------- */
@@ -431,7 +431,7 @@ svg{max-width:100%;height:auto}
 .tl-time{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;padding-top:1px}
 .tl-time small{display:block;font-size:11px;font-weight:400;color:var(--text-sub)}
 .tl-dot{width:12px;height:12px;border-radius:50%;margin:4px auto 0;background:var(--bg);box-shadow:inset 0 0 0 2.5px var(--cat-study);position:relative}
-.tl-dot.work{box-shadow:inset 0 0 0 2.5px var(--cat-work)}.tl-dot.personal{box-shadow:inset 0 0 0 2.5px var(--cat-personal)}
+.tl-dot.work{box-shadow:inset 0 0 0 2.5px var(--cat-work)}.tl-dot.gym{box-shadow:inset 0 0 0 2.5px var(--cat-gym)}.tl-dot.personal{box-shadow:inset 0 0 0 2.5px var(--cat-personal)}
 .sw:not(:last-child) .tl-dot:after{content:"";position:absolute;left:5px;top:16px;height:38px;border-left:1.5px solid rgba(var(--sh-c),.25)}
 .tl-body b{display:block;font-size:14px;font-weight:500}
 .tl-body small{display:block;font-size:11px;color:var(--text-sub);margin-top:2px}
@@ -498,6 +498,10 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 .cat-tag{display:inline-flex;align-items:center;gap:5px}
 .cat-tag i{width:7px;height:7px;border-radius:50%;background:var(--c);display:inline-block}
 .goal-row.done .task-title{color:var(--text-sub)}
+
+.wheel-slider-group label>span:first-child{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.w-ico{width:16px;height:16px;flex-shrink:0;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cat-chips button{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -614,7 +618,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
   <div class="modal-card">
     <div class="card-title" id="taskModalTitle">Новая задача</div>
     <div class="input-group"><label for="taskTitle">Название</label><input type="text" id="taskTitle" class="input-field" placeholder="Подготовиться к тесту"></div>
-    <div class="input-group"><label for="taskCategory">Категория</label><input type="text" id="taskCategory" class="input-field" placeholder="Учеба / Работа / Быт"></div>
+    <div class="input-group"><label>Категория</label><div class="cat-chips" id="taskCats"></div></div>
     <div class="input-group"><label for="taskComment">Комментарий / Время</label><input type="text" id="taskComment" class="input-field" placeholder="Детали..."></div>
     <div class="input-group"><label for="taskPriority">Приоритет</label>
       <select id="taskPriority" class="input-field"><option value="high">Высокий</option><option value="mid" selected>Средний</option><option value="low">Низкий</option></select></div>
@@ -655,8 +659,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
   <div class="modal-card">
     <div class="card-title" id="eventModalTitle">Новое событие</div>
     <div class="input-group"><label for="eventTitleInput">Название</label><input type="text" id="eventTitleInput" class="input-field" placeholder="Математика / Встреча"></div>
-    <div class="input-group"><label for="eventCategorySelect">Категория</label>
-      <select id="eventCategorySelect" class="input-field"><option value="study">Учеба</option><option value="work">Работа</option><option value="personal">Личное</option></select></div>
+    <div class="input-group"><label>Категория</label><div class="cat-chips" id="eventCats"></div></div>
     <div class="input-group"><label for="eventPrioritySelect">Приоритет</label>
       <select id="eventPrioritySelect" class="input-field"><option value="high">Высокий</option><option value="mid" selected>Средний</option><option value="low">Низкий</option></select></div>
     <div class="input-group" id="eventDateGroup"><label for="eventDateInput">Дата</label><input type="date" id="eventDateInput" class="input-field"></div>
@@ -910,7 +913,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 4.4.3</div>
+      <div>Версия 4.5.0</div>
     </div>
   </div>
 </main>
@@ -1309,7 +1312,7 @@ const S = { tasks: [], habits: [], goals: [], schedule: [], wheel: {}, pet: null
 
 const normTask = t => {
   t = obj(t); const dl = isYmd(t.deadline) ? t.deadline : (isYmd(t.date) ? t.date : ymd());
-  return { id: t.id ?? uid(), title: String(t.title ?? '').slice(0, 300), category: String(t.category || 'Общее').slice(0, 60),
+  return { id: t.id ?? uid(), title: String(t.title ?? '').slice(0, 300), category: normCat(t.category),
     date: isYmd(t.date) ? t.date : dl, deadline: dl, comment: String(t.comment || '').slice(0, 300),
     priority: ['high', 'mid', 'low'].includes(t.priority) ? t.priority : 'mid', done: !!t.done, updatedAt: +t.updatedAt || 0 };
 };
@@ -1347,7 +1350,11 @@ const normHabit = h => {
   return { id: h.id ?? uid(), title, icon: HABIT_ICONS[h.icon] ? h.icon : guessIcon(title), repeat: rep, target: String(h.target || '').slice(0, 30), log, updatedAt: +h.updatedAt || 0 };
 };
 const eventsOn = s => S.schedule.filter(e => e.repeat ? e.day === weekdayIdx(parseYmd(s)) : e.date === s).sort((a, b) => a.startTime.localeCompare(b.startTime));
-const GOAL_CATS = { work: ['Работа', 'var(--cat-work)'], study: ['Учеба', 'var(--cat-study)'], gym: ['Спорт', '#9FB3C4'], personal: ['Личное', 'var(--cat-personal)'] };
+const GOAL_CATS = { work: ['Работа', 'var(--cat-work)'], study: ['Учеба', 'var(--cat-study)'], gym: ['Спорт', 'var(--cat-gym)'], personal: ['Личное', 'var(--cat-personal)'] };
+const CATS = GOAL_CATS;
+const normCat = c => { if (CATS[c]) return c; const s = String(c || '').toLowerCase();
+  return /уч|study|школ|универ|курс|экзам|тест/.test(s) ? 'study' : /раб|work|офис|проект|job/.test(s) ? 'work' : /спорт|gym|трен|зал|бег|йог/.test(s) ? 'gym' : 'personal'; };
+const catTag = c => { const [n, col] = CATS[normCat(c)]; return `<span class="cat-tag" style="--c:${col}"><i></i>${n}</span>`; };
 const normGoal = g => { g = obj(g); return { id: g.id ?? uid(), title: String(g.title ?? '').slice(0, 200), category: GOAL_CATS[g.category] ? g.category : 'personal',
   deadline: isYmd(g.deadline) ? g.deadline : '', done: !!g.done || (+g.progress >= 100), updatedAt: +g.updatedAt || 0 }; };
 const normEvent = e => {
@@ -1355,7 +1362,7 @@ const normEvent = e => {
   let st = isHM(e.startTime) ? e.startTime : (Number.isInteger(e.hour) ? `${pad(clamp(e.hour, 0, 23))}:00` : '09:00');
   let en = isHM(e.endTime) ? e.endTime : fromMin(Math.min(toMin(st) + 60, 1439));
   if (toMin(en) <= toMin(st)) en = fromMin(Math.min(toMin(st) + 60, 1439));
-  return { id: e.id ?? uid(), title: String(e.title ?? '').slice(0, 120), category: ['study', 'work', 'personal'].includes(e.category) ? e.category : 'study',
+  return { id: e.id ?? uid(), title: String(e.title ?? '').slice(0, 120), category: ['study', 'work', 'gym', 'personal'].includes(e.category) ? e.category : 'study',
     priority: ['high', 'mid', 'low'].includes(e.priority) ? e.priority : 'mid', ...(e.repeat === false && isYmd(e.date) ? { repeat: false, date: e.date, day: weekdayIdx(parseYmd(e.date)) } : { repeat: true, day: clamp(parseInt(e.day) || 0, 0, 6) }), startTime: st, endTime: en, updatedAt: +e.updatedAt || 0 };
 };
 /** Garden state (stored under the old pet key). v1 (animals) → v2 (plants) with a coin refund. */
@@ -1384,13 +1391,22 @@ const normWheel = w => {
 const normTomb = t => { t = obj(t); const o = {}; COLLECTIONS.forEach(c => { o[c] = obj(t[c]); }); return o; };
 
 const SECTORS = [
-  { id: 'health', name: 'Здоровье', icon: '❤️', color: '#D99A8B', track: 'rgba(217,154,139,.22)' },
-  { id: 'self', name: 'Саморазвитие', icon: '🧠', color: '#9FB3C4', track: 'rgba(159,179,196,.25)' },
-  { id: 'rest', name: 'Отдых', icon: '☕', color: '#9DB59A', track: 'rgba(157,181,154,.25)' },
-  { id: 'study', name: 'Учеба', icon: '📚', color: '#DCC07F', track: 'rgba(220,192,127,.25)' },
-  { id: 'work', name: 'Работа', icon: '💼', color: '#CF9C70', track: 'rgba(207,156,112,.22)' },
-  { id: 'sport', name: 'Спорт', icon: '🏃‍♀️', color: '#B3A3C7', track: 'rgba(179,163,199,.25)' }
+  { id: 'health', name: 'Здоровье', ico: 'heart', fg: '#B4685A', icon: '❤️', color: '#D99A8B', track: 'rgba(217,154,139,.22)' },
+  { id: 'self', ico: 'bulb', fg: '#5F7E99', name: 'Саморазвитие', icon: '🧠', color: '#9FB3C4', track: 'rgba(159,179,196,.25)' },
+  { id: 'rest', ico: 'cup', fg: '#5E7F62', name: 'Отдых', icon: '☕', color: '#9DB59A', track: 'rgba(157,181,154,.25)' },
+  { id: 'study', ico: 'study', fg: '#A8822A', name: 'Учеба', icon: '📚', color: '#DCC07F', track: 'rgba(220,192,127,.25)' },
+  { id: 'work', ico: 'case', fg: '#A9714A', name: 'Работа', icon: '💼', color: '#CF9C70', track: 'rgba(207,156,112,.22)' },
+  { id: 'sport', ico: 'run', fg: '#7D6A9E', name: 'Спорт', icon: '🏃‍♀️', color: '#B3A3C7', track: 'rgba(179,163,199,.25)' }
 ];
+const WHEEL_ICONS = {
+  heart: '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/>',
+  bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+  cup: '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5c0 1.5 1 1.5 1 3M12 3.5c0 1.5 1 1.5 1 3"/>',
+  study: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3.5 2.5 8.5 2.5 12 0v-5"/><path d="M22 9v6"/>',
+  case: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 12.5h18"/>',
+  run: '<circle cx="15" cy="4.5" r="2"/><path d="M7 21l3.5-6.5 3 2.5v5"/><path d="M5 12l3.5-4 4.5 1 2.5 3.5 3.5 1"/>',
+};
+const wIco = (s, cls = 'w-ico') => `<svg class="${cls}" viewBox="0 0 24 24" style="stroke:${s.fg}" aria-hidden="true">${WHEEL_ICONS[s.ico]}</svg>`;
 const WHEEL_DEFAULT = { health: 7, self: 6, rest: 8, study: 7, work: 6, sport: 7 };
 
 function reloadState() {
@@ -1494,7 +1510,7 @@ function renderTasks() {
       <button class="checkbox ${t.done ? 'checked' : ''}" data-act="toggleTask" data-id="${esc(t.id)}" aria-label="Отметить выполненной">${t.done ? '✓' : ''}</button>
       <button class="task-body" data-act="openTask" data-id="${esc(t.id)}">
         <div class="task-title ${t.done ? 'done' : ''}">${esc(t.title)}</div>
-        <div class="task-meta ${late ? 'overdue' : ''}">${esc(t.category)} • до ${formatTaskDate(dl)}${t.comment ? ' • ' + esc(t.comment) : ''}</div>
+        <div class="task-meta ${late ? 'overdue' : ''}">${catTag(t.category)} · до ${formatTaskDate(dl)}${t.comment ? ' • ' + esc(t.comment) : ''}</div>
       </button></div>`);
   }).join('');
   const L = x => `<div class="sw-list">${x}</div>`;
@@ -1524,14 +1540,14 @@ function openTaskModal(id, forToday) {
   editing.task = id ?? null;
   const t = id != null ? S.tasks.find(x => same(x.id, id)) : null;
   $('taskModalTitle').textContent = t ? 'Изменить задачу' : 'Новая задача';
-  $('taskTitle').value = t?.title ?? ''; $('taskCategory').value = t?.category ?? ''; $('taskComment').value = t?.comment ?? '';
+  $('taskTitle').value = t?.title ?? ''; catDraft.task = t ? normCat(t.category) : 'personal'; renderCats('task'); $('taskComment').value = t?.comment ?? '';
   $('taskPriority').value = t?.priority ?? 'mid'; $('taskDeadline').value = t?.deadline ?? (forToday ? ymd() : selectedDay);
   $('taskDeleteBtn').classList.toggle('hidden', !t); openModal('taskModal');
 }
 function saveTask() {
   const title = $('taskTitle').value.trim(); if (!title) return toast('Введите название');
   const deadline = $('taskDeadline').value; if (!isYmd(deadline)) return toast('Укажите дедлайн');
-  const data = { title, category: $('taskCategory').value.trim() || 'Общее', comment: $('taskComment').value.trim(), priority: $('taskPriority').value, deadline, date: deadline };
+  const data = { title, category: catDraft.task, comment: $('taskComment').value.trim(), priority: $('taskPriority').value, deadline, date: deadline };
   const ex = editing.task != null ? S.tasks.find(x => same(x.id, editing.task)) : null;
   if (ex) Object.assign(ex, data), touch(ex); else S.tasks.push(touch(normTask({ id: uid(), done: false, ...data })));
   commit('tasks'); selectedDay = deadline;
@@ -1564,8 +1580,11 @@ function renderGoals() {
       <button class="task-body" data-act="openGoal" data-id="${esc(g.id)}"><div class="task-title ${g.done ? 'done' : ''}">${esc(g.title)}</div>
       <div class="task-meta ${cls}"><span class="cat-tag" style="--c:${cc}"><i></i>${cn}</span> · ${g.done ? 'достигнута 🎉' : due}</div></button></div>`); }).join('')}</div>`;
 }
+const catDraft = { goal: 'personal', task: 'personal', event: 'study' };
+const CAT_BOX = { goal: 'goalCats', task: 'taskCats', event: 'eventCats' };
+function renderCats(kind) { $(CAT_BOX[kind]).innerHTML = Object.entries(CATS).map(([k, [n, c]]) => `<button type="button" class="${k === catDraft[kind] ? 'active' : ''}" style="--c:${c}" data-act="pickCat" data-kind="${kind}" data-c="${k}" aria-pressed="${k === catDraft[kind]}"><i></i>${n}</button>`).join(''); }
 let goalCat = 'personal';
-function renderGoalCats() { $('goalCats').innerHTML = Object.entries(GOAL_CATS).map(([k, [n, c]]) => `<button class="${k === goalCat ? 'active' : ''}" style="--c:${c}" data-act="goalCat" data-c="${k}"><i></i>${n}</button>`).join(''); }
+function renderGoalCats() { catDraft.goal = goalCat; renderCats('goal'); }
 function openGoalModal(id) {
   editing.goal = id ?? null; const g = id != null ? S.goals.find(x => same(x.id, id)) : null;
   $('goalModalTitle').textContent = g ? 'Изменить цель' : 'Новая цель';
@@ -1735,7 +1754,7 @@ function renderTimeline() {
   const evs = eventsOn(ymd());
   if (!evs.length) { box.innerHTML = `<div class="empty">Сегодня в расписании пусто 🌿</div>`; return; }
   const n = new Date(), nowM = n.getHours() * 60 + n.getMinutes(); let nextMarked = false;
-  const cat = { study: 'Учеба', work: 'Работа', personal: 'Личное' };
+  const cat = { study: 'Учеба', work: 'Работа', gym: 'Спорт', personal: 'Личное' };
   box.innerHTML = evs.map(e => {
     const s = toMin(e.startTime), en = toMin(e.endTime), state = en <= nowM ? 'past' : s <= nowM ? 'now' : 'next';
     let note = cat[e.category];
@@ -1834,7 +1853,7 @@ function openEventModal(id, forToday) {
   editing.event = id ?? null; const e = id != null ? S.schedule.find(x => same(x.id, id)) : null;
   const base = forToday ? ymd() : selectedDay;
   $('eventModalTitle').textContent = e ? 'Изменить событие' : 'Новое событие';
-  $('eventTitleInput').value = e?.title ?? ''; $('eventCategorySelect').value = e?.category ?? 'study'; $('eventPrioritySelect').value = e?.priority ?? 'mid';
+  $('eventTitleInput').value = e?.title ?? ''; catDraft.event = e?.category ?? 'study'; renderCats('event'); $('eventPrioritySelect').value = e?.priority ?? 'mid';
   $('eventDateInput').value = e && !e.repeat ? e.date : base;
   $('eventDaySelect').value = String(e?.day ?? weekdayIdx(parseYmd(base)));
   setEventRepeatUI(e ? e.repeat : false);
@@ -1850,18 +1869,17 @@ function saveEvent(alsoReminder) {
   if (toMin(endTime) <= toMin(startTime)) return toast('Время «до» должно быть позже времени «от»');
   const repeat = $('eventRepeat').checked, date = $('eventDateInput').value;
   if (!repeat && !isYmd(date)) return toast('Выберите дату');
-  const data = { title, category: $('eventCategorySelect').value, priority: $('eventPrioritySelect').value, startTime, endTime,
+  const data = { title, category: catDraft.event, priority: $('eventPrioritySelect').value, startTime, endTime,
     ...(repeat ? { repeat: true, day: parseInt($('eventDaySelect').value), date: undefined } : { repeat: false, date, day: weekdayIdx(parseYmd(date)) }) };
   const ex = editing.event != null ? S.schedule.find(x => same(x.id, editing.event)) : null;
   if (ex) { Object.assign(ex, data); if (repeat) delete ex.date; touch(ex); commit('schedule'); renderTimetable(); renderCalendar(); }
   else {
     addScheduleEvent(data); renderCalendar();
     if (alsoReminder) {
-      const catNames = { study: 'Учеба', work: 'Работа', personal: 'Личное' };
       let ds;
       if (!repeat) ds = date;
       else { let d = addDays(mondayOf(), data.day); if (ymd(d) < ymd()) d = addDays(d, 7); ds = ymd(d); }   // next occurrence, never in the past
-      S.tasks.push(touch(normTask({ id: uid(), title, category: catNames[data.category], date: ds, deadline: ds, comment: `${startTime}–${endTime}`, priority: data.priority })));
+      S.tasks.push(touch(normTask({ id: uid(), title, category: data.category, date: ds, deadline: ds, comment: `${startTime}–${endTime}`, priority: data.priority })));
       commit('tasks'); selectedDay = ds; focusMonthOn(ds);
       renderWeekSelector(); renderTasks(); renderHomePriorityTasks();
     }
@@ -1891,7 +1909,7 @@ function arc(cx, cy, r, a0, a1) {
 }
 function buildWheelControls() {
   $('wheelControlsContainer').innerHTML = SECTORS.map(s => `
-    <div class="wheel-slider-group"><label for="wr_${s.id}"><span>${s.icon} ${s.name}</span><span id="val_${s.id}">0 / 8</span></label>
+    <div class="wheel-slider-group"><label for="wr_${s.id}"><span>${wIco(s)}${s.name}</span><span id="val_${s.id}">0 / 8</span></label>
     <input id="wr_${s.id}" type="range" min="0" max="8" value="0" data-wheel="${s.id}"></div>`).join('');
 }
 function renderWheel() {
@@ -1904,7 +1922,7 @@ function renderWheel() {
     svg += `<path d="${arc(cx, cy, R, a0, a1)}" fill="none" stroke="${s.track}" stroke-width="22" stroke-linecap="round"/>`;
     if (v > 0) svg += `<path d="${arc(cx, cy, R, a0, a0 + arcSpan * v / 8)}" fill="none" stroke="${s.color}" stroke-width="22" stroke-linecap="round"/>`;
     const p = polar(cx, cy, R, a0 + arcSpan / 2);
-    svg += `<circle cx="${p.x}" cy="${p.y}" r="13" style="fill:var(--bg);stroke:rgba(150,128,100,.22)"/><text x="${p.x}" y="${p.y + 4.5}" text-anchor="middle" font-size="13">${s.icon}</text>`;
+    svg += `<circle cx="${p.x}" cy="${p.y}" r="13" style="fill:var(--bg);stroke:rgba(150,128,100,.22)"/><g transform="translate(${p.x - 7.5} ${p.y - 7.5}) scale(.625)" fill="none" stroke="${s.fg}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${WHEEL_ICONS[s.ico]}</g>`;
   });
   svg += `<text x="${cx}" y="${cy + 6}" text-anchor="middle" font-size="44" font-weight="800" fill="#2B2A28">${(total / SECTORS.length).toFixed(1)}</text>`;
   svg += `<text x="${cx}" y="${cy + 28}" text-anchor="middle" font-size="12" font-weight="600" fill="#8E8E93">${isToday ? 'текущий баланс' : parseYmd(wheelDate).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })}</text>`;
@@ -2231,7 +2249,7 @@ function executePetAction() {
   const type = $('petActionType').value, title = $('petInputTitle').value.trim(); if (!title) return toast('Введите название!');
   if (type === 'task') {
     const dl = $('petInputDate').value || ymd();
-    S.tasks.push(touch(normTask({ id: uid(), title, category: 'Помощник 🐾', date: dl, deadline: dl, comment: 'Добавлено питомцем', priority: 'mid' }))); commit('tasks');
+    S.tasks.push(touch(normTask({ id: uid(), title, category: 'personal', date: dl, deadline: dl, comment: 'Добавлено питомцем', priority: 'mid' }))); commit('tasks');
     renderTasks(); renderHomePriorityTasks(); renderWeekSelector(); renderFocusOfDay();
   } else if (type === 'goal') {
     S.goals.push(touch(normGoal({ id: uid(), title, category: 'personal', deadline: $('petGoalDate').value }))); commit('goals'); renderGoals();
@@ -2594,7 +2612,7 @@ const ACT = {
   openTask: d => openTaskModal(d.id, d.today), saveTask, deleteTask, toggleTask: d => toggleTask(d.id),
   selectDay: d => { selectedDay = d.date; focusMonthOn(d.date); renderCalendar(); renderTasks(); },
   monthPrev: () => { monthOffset--; renderCalendar(); }, monthNext: () => { monthOffset++; renderCalendar(); },
-  openGoal: d => openGoalModal(d.id), saveGoal, deleteGoal, toggleGoal: d => toggleGoal(d.id), goalCat: d => { goalCat = d.c; renderGoalCats(); },
+  openGoal: d => openGoalModal(d.id), saveGoal, deleteGoal, toggleGoal: d => toggleGoal(d.id), goalCat: d => { goalCat = d.c; renderGoalCats(); }, pickCat: d => { catDraft[d.kind] = d.c; if (d.kind === 'goal') goalCat = d.c; renderCats(d.kind); },
   swEdit: d => { swClose(); ({ task: openTaskModal, event: openEventModal, goal: openGoalModal })[d.kind](d.id); },
   swDel: d => { swClose(); deleteWithUndo(COLL_OF[d.kind], d.id); },
   openHabit: d => openHabitModal(d.id), saveHabit, toggleHabit: d => toggleHabit(d.id, d.date),
