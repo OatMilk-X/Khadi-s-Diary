@@ -1,6 +1,6 @@
 /* Khadi's Diary service worker: offline app shell.
    Bump VERSION whenever you deploy a new index.html. */
-const VERSION = 'v4.5.1';
+const VERSION = 'v5.0.0';
 const CACHE = 'khadis-diary-' + VERSION;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'];
@@ -21,7 +21,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   // Static shell + pinned CDN library: cache first
-  if (url.origin === location.origin || url.hostname === 'cdn.jsdelivr.net') {
+  if (url.origin === location.origin || ['cdn.jsdelivr.net', 'fonts.googleapis.com', 'fonts.gstatic.com'].includes(url.hostname)) {
     e.respondWith(caches.match(req).then(hit => hit || fetch(req).then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(req, copy)); } return r; })));
   }
   // everything else (Supabase API, Open-Meteo, Gemini) goes straight to the network

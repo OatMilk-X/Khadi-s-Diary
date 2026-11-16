@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, shrink-to-fit=no">
-<meta name="theme-color" content="#F5F0E9">
+<meta name="theme-color" content="#F7F5F1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Khadi's Diary">
@@ -11,9 +11,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" href="icon-192.png">
-<title>Khadi's Diary • Life Planner PWA</title>
+<title>Khadi's Diary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
-<script>try{document.documentElement.dataset.theme=localStorage.getItem("pwa_theme")==="sage"?"sage":"terracotta"}catch(e){}</script>
+<script>try{var t=localStorage.getItem("pwa_theme_beta");document.documentElement.dataset.theme=(t==="sage"||t==="terracotta")?t:"daylight"}catch(e){}</script>
 <style>
 :root{
   --bg:#F5F0E9; --text-main:#2B2A28; --text-sub:#8C867E; --faint:#C9C1B6;
@@ -31,7 +33,7 @@
   --bg:#F4EFE8; --accent:#6B7F6E; --accent-rgb:107,127,110; --accent-light:rgba(107,127,110,.14); --track:#D9E1D9;
   --cat-study:#8FA894; --cat-work:#C9BDAF; --cat-personal:#6B7F6E;
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Manrope",-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
 button,input,select,textarea{font:inherit;color:inherit}
 button{letter-spacing:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
@@ -502,6 +504,109 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 .wheel-slider-group label>span:first-child{display:inline-flex;align-items:center;gap:7px;min-width:0}
 .w-ico{width:16px;height:16px;flex-shrink:0;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cat-chips button{white-space:nowrap}
+/* =================== DAYLIGHT THEME (beta) =================== */
+:root{--surface:var(--bg);--field:var(--bg);--ink:var(--accent);--sun:var(--accent);--gold-ink:#A67C1C;--cat-gym:#9FB3C4}
+:root[data-theme="daylight"]{
+  --bg:#F7F5F1; --surface:#FFFFFF; --field:#F1F0F6; --text-main:#26304F; --text-sub:#8A8FA6; --faint:#C9CBDB;
+  --accent:#6E78C8; --accent-rgb:110,120,200; --accent-light:rgba(110,120,200,.12); --track:#E8E7F2;
+  --ink:#2E3A66; --sun:#F2CF63; --gold-ink:#9A7A1F; --sh-c:90,96,140; --radius:26px;
+  --sh-out:0 12px 32px rgba(46,58,102,.07),0 1px 3px rgba(46,58,102,.04);
+  --sh-sm:0 3px 10px rgba(46,58,102,.07);
+  --sh-in:inset 0 0 0 1px rgba(46,58,102,.07);
+  --danger:#D0605A; --danger-light:rgba(208,96,90,.1);
+  --cat-study:#8FA6D0; --cat-work:#E3A06F; --cat-personal:#E3A3A6; --cat-gym:#9DB59A;
+  --priority-high:#D9776A; --priority-mid:#EBC06A; --priority-low:#9DB59A;
+}
+:root[data-theme="daylight"] body{background:radial-gradient(120% 60% at 100% 0%,rgba(242,207,99,.13),transparent 60%),radial-gradient(90% 50% at 0% 30%,rgba(124,134,210,.08),transparent 60%),var(--bg);background-attachment:fixed}
+:root[data-theme="daylight"] .app-container{background:transparent}
+:root[data-theme="daylight"] header{background:linear-gradient(var(--bg) 75%,rgba(247,245,241,0))}
+:root[data-theme="daylight"] :is(.card,.settings-group,.widget,.modal-card,.bottom-nav,.ai-fab,.mini-timer,.ai-fab-bubble,.gold-badge,.weather-badge,.btn-secondary,.btn-small,.icon-btn,.add-btn,.page-back,.shop-item-card,.hb-card,.theme-opt,.cat-chips button,.chips button,.stepper button,.profile-avatar-mini,.pet-bubble,.chat-msg.bot,.btn-danger,.tl-check){background:var(--surface)}
+:root[data-theme="daylight"] .dow-chips button:not(.on),:root[data-theme="daylight"] .hb-day:not(.sel) b{background:var(--surface)}
+:root[data-theme="daylight"] :is(.input-field,.seg,.bar,.stepper,.sync-badge,.pill-track,.gc-plant,.w-plant,.gh-plant,.pet-stage-box,.wheel-slider-group,.hh-check,.switch span,.preview-avatar-box,.pet-avatar-mini-stage){background:var(--field)}
+:root[data-theme="daylight"] .history-controls input[type=date]{background:var(--field)}
+:root[data-theme="daylight"] .checkbox:not(.checked),:root[data-theme="daylight"] .habit-checkbox:not(.checked),:root[data-theme="daylight"] .hb-check:not(.on),:root[data-theme="daylight"] .w-dots i:not(.on){background:var(--field)}
+:root[data-theme="daylight"] .card.flat{background:transparent;box-shadow:none;border:1px dashed rgba(46,58,102,.13)}
+:root[data-theme="daylight"] .btn-primary{background:var(--ink);box-shadow:0 10px 22px rgba(46,58,102,.22);letter-spacing:.08em}
+:root[data-theme="daylight"] .btn-primary.running{background:#5E7F62}
+:root[data-theme="daylight"] .checkbox.checked,:root[data-theme="daylight"] .hb-check.on,:root[data-theme="daylight"] .hh-line.on .hh-check,:root[data-theme="daylight"] .habit-checkbox.checked{background:var(--sun);color:var(--ink);box-shadow:0 4px 12px rgba(242,207,99,.45)}
+:root[data-theme="daylight"] .switch input:checked+span{background:var(--sun)}
+:root[data-theme="daylight"] .seg>button.active{background:var(--ink);color:#fff;box-shadow:0 6px 14px rgba(46,58,102,.25)}
+:root[data-theme="daylight"] .cal-day.active,:root[data-theme="daylight"] .hb-day.sel b{background:var(--ink);color:#fff;box-shadow:0 8px 16px rgba(46,58,102,.25)}
+:root[data-theme="daylight"] .dow-chips button.on{background:var(--ink);color:#fff}
+:root[data-theme="daylight"] .nav-item.active{color:var(--ink)}
+:root[data-theme="daylight"] .nav-item.active svg{stroke:var(--ink)}
+:root[data-theme="daylight"] .nav-item#nav-home.active svg{fill:var(--sun);stroke:var(--ink)}
+:root[data-theme="daylight"] .wm-title{font-weight:600;letter-spacing:.14em;margin-right:-.14em;font-size:26px;color:var(--ink)}
+:root[data-theme="daylight"] .wm-title i{color:#E2B53E}
+:root[data-theme="daylight"] .card-title{font-weight:600;letter-spacing:-.01em}
+:root[data-theme="daylight"] .greeting{font-weight:700;color:var(--ink)}
+:root[data-theme="daylight"] .gold-badge{color:var(--gold-ink)}
+:root[data-theme="daylight"] .sync-badge{color:#5E7F62}
+:root[data-theme="daylight"] .sync-badge.offline{color:#B08A2E}
+:root[data-theme="daylight"] .focus-line:before{background:var(--sun);width:4px}
+:root[data-theme="daylight"] .toast{background:rgba(38,48,79,.95)}
+:root[data-theme="daylight"] .modal-overlay{background:rgba(38,48,79,.28)}
+:root[data-theme="daylight"] .chat-msg.me{background:var(--ink)}
+:root[data-theme="daylight"] .page-back{color:var(--ink)}
+:root[data-theme="daylight"] .theme-opt .sw i{border-color:#fff}
+:root[data-theme="daylight"] .cat-chips button.active{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--c),0 3px 10px rgba(46,58,102,.07)}
+.wm-hand{font-family:"Caveat",cursive;font-size:21px;color:var(--text-sub);margin-top:4px;letter-spacing:0;text-transform:none}
+:root:not([data-theme="daylight"]) .wm-hand{display:none}
+:root[data-theme="daylight"] .quote{font-family:"Caveat",cursive;font-style:normal;font-size:21px;line-height:1.3;color:var(--text-main)}
+.coin-ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+:root[data-theme="daylight"] .coin-ico{fill:rgba(242,207,99,.35)}
+.wx-ico{display:inline-flex}
+.wx-ico svg{width:22px;height:22px;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.av-ico{width:24px;height:24px;fill:none;stroke:var(--accent);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- beta timeline ---------- */
+:root[data-theme="daylight"] .sw-content{background:var(--surface)}
+.tl-quick{display:flex;gap:14px;overflow-x:auto;padding:2px 2px 16px;margin:0 -2px 6px;border-bottom:1px solid rgba(var(--sh-c),.12)}
+.tq{flex-shrink:0;width:70px;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;color:var(--text-main)}
+.tq-ico{width:56px;height:56px;border-radius:50%;background:var(--c);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 6px 14px rgba(46,58,102,.12);transition:transform .15s}
+.tq:active .tq-ico{transform:scale(.94)}
+.tq-ico svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tq-t{font-size:11px;font-weight:600;line-height:1.25;text-align:center;max-height:2.6em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.tq.done .tq-ico{opacity:.45}
+.tq.done .tq-ico:after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700}
+.tq.done .tq-ico svg{display:none}
+.tq.done .tq-t{color:var(--text-sub);text-decoration:line-through}
+.tl2{position:relative;padding-top:6px}
+.tl2 .sw{margin-bottom:10px;overflow:visible}
+.tl2 .sw .sw-actions{opacity:0;transition:opacity .15s}
+.tl2 .sw:has(.sw-content[style*="translate"]) .sw-actions{opacity:1}
+.tl2-item{display:grid;grid-template-columns:42px 52px 1fr 30px;gap:10px;align-items:center;transition:opacity .8s ease}
+.tl2-time{display:flex;flex-direction:column;justify-content:space-between;font-size:11px;color:var(--text-sub);font-variant-numeric:tabular-nums;padding:2px 0}
+.tl2-time b{font-size:12px;font-weight:600;color:var(--text-main)}
+.tl2-time em{font-style:normal;font-weight:700;color:var(--c);font-size:12px}
+.tl2-rail{position:relative;display:flex;justify-content:center;align-self:stretch;align-items:center}
+.tl2-rail:before{content:"";position:absolute;top:-12px;bottom:-12px;left:50%;width:2px;margin-left:-1px;background:repeating-linear-gradient(to bottom,rgba(var(--sh-c),.28) 0 3px,transparent 3px 7px)}
+.tl2-pill{position:relative;width:48px;border-radius:24px;background:var(--c);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(46,58,102,.13);transition:height .4s}
+.tl2-pill svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tl2-item.now .tl2-pill{box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 22%,transparent),0 8px 18px rgba(46,58,102,.16)}
+.tl2-body{border:none;background:none;text-align:left;cursor:pointer;min-width:0;padding:4px 0}
+.tl2-body small{display:block;font-size:11px;color:var(--text-sub);margin-bottom:3px;font-variant-numeric:tabular-nums}
+.tl2-body small.now-txt{color:var(--c);font-weight:700;filter:brightness(.85)}
+.tl2-body b{display:block;font-size:15px;font-weight:600;color:var(--text-main);line-height:1.25;word-break:break-word}
+.tl2-item.done .tl2-body b{text-decoration:line-through;color:var(--text-sub)}
+.tl-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--c);background:transparent;color:transparent;cursor:pointer;font-size:13px;font-weight:700;padding:0;transition:.15s}
+.tl-check.on{background:var(--c);color:#fff}
+.tl2-now{display:flex;align-items:center;gap:8px;margin:2px 0 12px;color:var(--accent);font-size:11px;font-weight:700}
+.tl2-now:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.tl2-now:after{content:"";flex:1;height:1.5px;background:linear-gradient(90deg,var(--accent),transparent)}
+.ev-ico{width:34px;height:34px;border-radius:12px;background:var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ev-ico svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ev-head{display:flex;gap:12px;align-items:flex-end;margin-bottom:16px}
+.ev-preview{width:52px;height:52px;border-radius:18px;background:var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ev-preview svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ev-icons{grid-template-columns:repeat(7,1fr)}
+.ev-icons button{background:var(--surface,var(--bg));color:var(--text-sub)}
+.ev-icons button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ev-icons button.active{background:var(--c);color:#fff;box-shadow:none}
+.color-row{display:flex;justify-content:space-between;gap:6px}
+.color-row button{width:30px;height:30px;border-radius:50%;border:none;background:var(--c);cursor:pointer;box-shadow:0 2px 6px rgba(46,58,102,.15)}
+.color-row button.active{box-shadow:0 0 0 3px var(--surface,var(--bg)),0 0 0 5px var(--c)}
+
 </style>
 </head>
 <body>
@@ -658,7 +763,9 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 <div id="eventModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
   <div class="modal-card">
     <div class="card-title" id="eventModalTitle">Новое событие</div>
-    <div class="input-group"><label for="eventTitleInput">Название</label><input type="text" id="eventTitleInput" class="input-field" placeholder="Математика / Встреча"></div>
+    <div class="ev-head"><span class="ev-preview" id="evPreview"></span><div class="input-group" style="flex:1;margin:0"><label for="eventTitleInput">Название</label><input type="text" id="eventTitleInput" class="input-field" placeholder="Йога / Встреча / Кофе"></div></div>
+    <div class="input-group"><label>Иконка</label><div class="icon-grid ev-icons" id="evIconGrid"></div></div>
+    <div class="input-group"><label>Цвет</label><div class="color-row" id="evColorRow"></div></div>
     <div class="input-group"><label>Категория</label><div class="cat-chips" id="eventCats"></div></div>
     <div class="input-group"><label for="eventPrioritySelect">Приоритет</label>
       <select id="eventPrioritySelect" class="input-field"><option value="high">Высокий</option><option value="mid" selected>Средний</option><option value="low">Низкий</option></select></div>
@@ -678,13 +785,13 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 <header>
   <div class="header-top">
     <button class="profile-mini" data-act="tab" data-tab="settings" aria-label="Профиль и настройки">
-      <div class="profile-avatar-mini" id="headerAvatarBox">🌸</div>
+      <div class="profile-avatar-mini" id="headerAvatarBox"></div>
       <div><div class="sub-greeting" id="displayDate" style="margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><div class="greeting" id="displayGreeting">Привет 👋</div></div>
     </button>
     <div class="header-right-badges">
-      <button class="gold-badge" data-act="openGarden" title="Монеты за фокус — тратятся в саду" style="border:1px solid rgba(255,183,3,.4)">🪙 <span id="headerGoldCount">0</span></button>
+      <button class="gold-badge" data-act="openGarden" title="Монеты за фокус — тратятся в саду" ><svg class="coin-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><path d="M12 9.5v5"/></svg> <span id="headerGoldCount">0</span></button>
       <button class="weather-badge" data-act="openWeather" title="Погода по часам" style="border:1px solid rgba(255,255,255,.8)">
-        <span id="weatherIcon">🌤️</span>
+        <span id="weatherIcon" class="wx-ico"></span>
         <div><div id="weatherTemp" style="font-weight:700">--°C</div><div id="weatherCity" style="font-size:9px;color:var(--text-sub)">Город</div></div>
       </button>
     </div>
@@ -771,7 +878,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
         <div class="shelf" id="gardenShelf"></div>
       </div>
       <div class="settings-group">
-        <div class="settings-group-title" style="display:flex;justify-content:space-between"><span>Магазин</span><span style="color:#A67C1C;letter-spacing:.05em">🪙 <span id="shopGold">0</span></span></div>
+        <div class="settings-group-title" style="display:flex;justify-content:space-between"><span>Магазин</span><span style="color:var(--gold-ink);letter-spacing:.05em;display:inline-flex;align-items:center;gap:5px"><svg class="coin-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><path d="M12 9.5v5"/></svg> <span id="shopGold">0</span></span></div>
         <div class="seg shop-tabs" role="group" aria-label="Разделы магазина">
           <button class="shop-tab-btn active" data-act="shopCat" data-cat="seeds">Семена</button>
           <button class="shop-tab-btn" data-act="shopCat" data-cat="pots">Горшки</button>
@@ -790,7 +897,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
   <!-- Home -->
   <div id="tab-home" class="tab-content active">
-    <div class="wordmark"><div class="wm-title">KHADI <i>/</i> DIARY</div><div class="wm-sub">A LITTLE ROOM TO FOCUS</div></div>
+    <div class="wordmark"><div class="wm-title">KHADI <i>/</i> DIARY</div><div class="wm-sub">A LITTLE ROOM TO FOCUS</div><div class="wm-hand">a kinder day lives here</div></div>
     <div class="card">
       <div class="card-title small">Фокус дня</div>
       <div class="focus-line"><span id="dailyFocusText"></span></div>
@@ -804,7 +911,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
       <div class="hh-list" id="homeHabits"></div>
     </div>
     <div class="card">
-      <div class="card-title"><span>Расписание на сегодня</span><button class="add-btn" data-act="openEvent" data-today="1" aria-label="Добавить событие"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>
+      <div class="card-title"><span>Сегодня</span><button class="add-btn" data-act="openEvent" data-today="1" aria-label="Добавить событие"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>
       <div class="timeline" id="homeTimeline"></div>
     </div>
     <div class="card">
@@ -868,7 +975,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
     <div id="settings-cat-theme" class="settings-section-pane hidden">
       <div class="settings-group">
         <div class="settings-group-title">Цветовая гамма</div>
-        <div class="theme-opts">
+        <div class="theme-opts"><button class="theme-opt" data-act="setTheme" data-theme="daylight" style="grid-column:span 2"><div class="sw"><i style="background:#2E3A66"></i><i style="background:#7C86D2"></i><i style="background:#F2CF63"></i><i style="background:#F7F5F1"></i></div><b>Daylight (новая)</b></button>
           <button class="theme-opt" data-act="setTheme" data-theme="terracotta"><div class="sw"><i style="background:#B9694F"></i><i style="background:#D9A38F"></i><i style="background:#E7DFD4"></i><i style="background:#F5F0E9"></i></div><b>Терракота</b></button>
           <button class="theme-opt" data-act="setTheme" data-theme="sage"><div class="sw"><i style="background:#6B7F6E"></i><i style="background:#A7B8A7"></i><i style="background:#D9E1D9"></i><i style="background:#F4EFE8"></i></div><b>Шалфей</b></button>
         </div>
@@ -913,7 +1020,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 4.5.1</div>
+      <div>Версия 5.0.0</div>
     </div>
   </div>
 </main>
@@ -1297,10 +1404,10 @@ const K = {
   tasks: 'pwa_tasks_extended', habits: 'pwa_habits_list', goals: 'pwa_goals_list', schedule: 'pwa_schedule',
   wheel: 'pwa_wheel_history', pet: 'pwa_pet_state', tomb: 'pwa_tombstones', profileTs: 'pwa_profile_ts',
   name: 'pwa_user_name', surname: 'pwa_user_surname', city: 'pwa_user_city', email: 'pwa_user_email', avatar: 'pwa_user_avatar',
-  onboarded: 'pwa_onboarded', geo: 'pwa_geo', theme: 'pwa_theme', aiKey: 'pwa_gemini_key', aiModel: 'pwa_gemini_model', pomo: 'pwa_pomo', weather: 'pwa_weather_cache'
+  onboarded: 'pwa_onboarded', geo: 'pwa_geo', theme: 'pwa_theme_beta', aiKey: 'pwa_gemini_key', aiModel: 'pwa_gemini_model', pomo: 'pwa_pomo', weather: 'pwa_weather_cache'
 };
 const lsGet = (k, d = '') => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch { return d; } };
-const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { toast('⚠️ Не хватает места в хранилище'); } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { toast('Не хватает места в хранилище'); } };
 const load = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } };
 const save = (k, v) => lsSet(k, JSON.stringify(v));
 
@@ -1331,6 +1438,46 @@ const HABIT_ICONS = {
   heart: ['<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/>', '#F4D6DE', '#B0596E'],
 };
 const ICON_KEYS = Object.keys(HABIT_ICONS);
+/* ---------- event icons + colours (beta) ---------- */
+const EV_EXTRA = {
+  alarm: '<circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 1.8"/><path d="M4 4.8L6.6 2.6M20 4.8l-2.6-2.2"/>',
+  shower: '<path d="M4 21V7.5a3.5 3.5 0 0 1 7 0"/><path d="M8.5 7.5h6.5a4 4 0 0 1 4 4"/><path d="M12 15v.01M15.5 15v.01M19 15v.01M13.7 18.5v.01M17.3 18.5v.01M15.5 21.5v.01"/>',
+  cup: '<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5c0 1.5 1 1.5 1 3M12 3.5c0 1.5 1 1.5 1 3"/>',
+  bike: '<circle cx="6" cy="16.5" r="3.5"/><circle cx="18" cy="16.5" r="3.5"/><path d="M6 16.5l4-7h5l3 7M10 9.5L8.5 6.5H6.5M13.5 9.5l1-3h2"/>',
+  phone: '<path d="M5 4h3.5l1.5 4.5-2.2 1.4a11 11 0 0 0 6.3 6.3l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5C10.5 20 4 13.5 3.5 5.6A1.5 1.5 0 0 1 5 4z"/>',
+  case: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 12.5h18"/>',
+  users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.5-3.5 3-5.5 6-5.5s5.5 2 6 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.5 14.6c2.4.2 4 1.9 4.5 4.4"/>',
+  trip: '<path d="M2.5 12.5l19-8-6 15.5-3.8-6.2z"/><path d="M11.7 13.8l4.3-4.3"/>',
+  cart: '<circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.5l2.2 11h10.6l2.2-7.5H7"/>',
+  doctor: '<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><path d="M12 8v8M8 12h8"/>',
+  star: '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
+};
+const EV_ICON_KEYS = ['alarm', 'sun', 'meditate', 'run', 'sport', 'walk', 'bike', 'shower', 'cup', 'food', 'book', 'study', 'case', 'users', 'phone', 'trip', 'cart', 'doctor', 'sleep', 'heart', 'star'];
+const evIconSvg = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${EV_EXTRA[k] || (HABIT_ICONS[k] || HABIT_ICONS.heart)[0]}</svg>`;
+const EV_COLORS = ['#E0896F', '#F2B58C', '#EBC86A', '#9DB59A', '#8FA6C4', '#6E78C8', '#A8879E', '#E3A3A6', '#4E5A86'];
+const ICON_COLOR = { alarm: '#E3A3A6', sun: '#EBC86A', meditate: '#8FA6C4', run: '#F2B58C', sport: '#9DB59A', walk: '#9DB59A', bike: '#9DB59A', shower: '#4E5A86', cup: '#A8879E',
+  food: '#F2B58C', book: '#E0896F', study: '#6E78C8', case: '#E0896F', users: '#6E78C8', phone: '#9DB59A', trip: '#8FA6C4', cart: '#EBC86A', doctor: '#E3A3A6', sleep: '#4E5A86', heart: '#E3A3A6', star: '#EBC86A' };
+const CAT_ICON = { study: 'study', work: 'case', gym: 'sport', personal: 'heart' };
+const CAT_COLOR = { study: '#8FA6C4', work: '#E0896F', gym: '#9DB59A', personal: '#E3A3A6' };
+function guessEvIcon(t, cat) {
+  t = String(t).toLowerCase();
+  const map = [[/подъ|встат|будил|wake|alarm|rise/, 'alarm'], [/йог|медит|yoga|дыха|stretch|растяж/, 'meditate'], [/бег|run|пробеж/, 'run'], [/зал|трен|gym|спорт|workout|фитнес/, 'sport'],
+    [/прогул|walk|ходьб/, 'walk'], [/велос|bike|вело/, 'bike'], [/душ|shower|ванн/, 'shower'], [/кофе|coffee|чай|tea|кафе/, 'cup'], [/завтрак|обед|ужин|еда|food|lunch|dinner|breakfast/, 'food'],
+    [/чит|книг|read/, 'book'], [/урок|лекц|учеб|study|экзам|тест|class|пара|англ|курс|математ/, 'study'], [/встреч|meet|созвон|митинг|собран/, 'users'], [/звон|позвон|call|мам|пап/, 'phone'],
+    [/работ|work|офис|проект/, 'case'], [/рейс|самол|аэроп|flight|trip|поездк|путеш|airport|istanbul|стамбул/, 'trip'], [/магаз|покуп|shop|продукт/, 'cart'],
+    [/врач|доктор|doctor|клиник|стомат|анализ/, 'doctor'], [/сон|спать|sleep|отбой/, 'sleep']];
+  return (map.find(([re]) => re.test(t)) || [0, CAT_ICON[cat] || 'star'])[1];
+}
+const evIcon = e => e.icon || guessEvIcon(e.title, e.category);
+const evColor = e => e.color || ICON_COLOR[evIcon(e)] || CAT_COLOR[e.category] || '#8FA6C4';
+let evDraft = null;
+function renderEvDraft() {
+  const col = evDraft.color || ICON_COLOR[evDraft.icon] || '#8FA6C4';
+  $('evPreview').style.setProperty('--c', col); $('evPreview').innerHTML = evIconSvg(evDraft.icon);
+  $('evIconGrid').innerHTML = EV_ICON_KEYS.map(k => `<button type="button" class="${k === evDraft.icon ? 'active' : ''}" style="--c:${col}" data-act="evIcon" data-icon="${k}" aria-label="${k}">${evIconSvg(k)}</button>`).join('');
+  $('evColorRow').innerHTML = EV_COLORS.map(c => `<button type="button" class="${c === col ? 'active' : ''}" style="--c:${c}" data-act="evColor" data-color="${c}" aria-label="Цвет ${c}"></button>`).join('');
+}
+
 const iconSvg = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${(HABIT_ICONS[k] || HABIT_ICONS.sun)[0]}</svg>`;
 const iconCol = k => (HABIT_ICONS[k] || HABIT_ICONS.sun).slice(1);
 function guessIcon(t) {
@@ -1430,8 +1577,8 @@ function removeFrom(coll, id) {
 }
 
 function applyTheme(t) {
-  t = t === 'sage' ? 'sage' : 'terracotta'; document.documentElement.dataset.theme = t; lsSet(K.theme, t);
-  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = t === 'sage' ? '#F4EFE8' : '#F5F0E9';
+  t = ['sage', 'terracotta'].includes(t) ? t : 'daylight'; document.documentElement.dataset.theme = t; lsSet(K.theme, t);
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = { sage: '#F4EFE8', terracotta: '#F5F0E9', daylight: '#F7F5F1' }[t];
   document.querySelectorAll('[data-act=setTheme]').forEach(b => b.classList.toggle('active', b.dataset.theme === t));
 }
 
@@ -1502,7 +1649,7 @@ function renderTasks() {
   const box = $('taskListContainer');
   if (!list.length && !evs.length) { box.innerHTML = `<div class="empty">На этот день ничего нет 🌿</div>`; return; }
   const evHtml = evs.map(e => sw('event', e.id, `<div class="task-extended-item">
-      <div class="ev-bar ${esc(e.category)}"></div>
+      <span class="ev-ico" style="--c:${evColor(e)}">${evIconSvg(evIcon(e))}</span>
       <div class="ev-time">${e.startTime}<small>${e.endTime}</small></div>
       <button class="task-body" data-act="openEvent" data-id="${esc(e.id)}"><div class="task-title">${esc(e.title)}</div><div class="task-meta">${e.repeat ? 'Каждую неделю · ' + DAYS_FULL[e.day].toLowerCase() : 'Разовое событие'}</div></button></div>`)).join('');
   const tHtml = list.map(t => {
@@ -1536,7 +1683,7 @@ function renderHomePriorityTasks() {
 }
 function toggleTask(id) {
   const t = S.tasks.find(x => same(x.id, id)); if (!t) return;
-  t.done = !t.done; touch(t); commit('tasks'); renderTasks(); renderHomePriorityTasks(); renderWeekSelector(); renderFocusOfDay();
+  t.done = !t.done; touch(t); commit('tasks'); renderTasks(); renderHomePriorityTasks(); renderTimeline(); renderWeekSelector(); renderFocusOfDay();
 }
 function openTaskModal(id, forToday) {
   editing.task = id ?? null;
@@ -1753,17 +1900,32 @@ function deleteHabit(id) {
 /* ---------- Home: today's timeline ---------- */
 function renderTimeline() {
   const box = $('homeTimeline'); if (!box) return;
-  const evs = eventsOn(ymd());
-  if (!evs.length) { box.innerHTML = `<div class="empty">Сегодня в расписании пусто 🌿</div>`; return; }
-  const n = new Date(), nowM = n.getHours() * 60 + n.getMinutes(); let nextMarked = false;
-  const cat = { study: 'Учеба', work: 'Работа', gym: 'Спорт', personal: 'Личное' };
-  box.innerHTML = evs.map(e => {
-    const s = toMin(e.startTime), en = toMin(e.endTime), state = en <= nowM ? 'past' : s <= nowM ? 'now' : 'next';
-    let note = cat[e.category];
-    if (state === 'now') note = `Сейчас · ещё ${en - nowM} мин`;
-    else if (state === 'next' && !nextMarked) { nextMarked = true; const d = s - nowM; note = `Через ${d >= 60 ? Math.floor(d / 60) + ' ч ' + (d % 60 ? d % 60 + ' мин' : '') : d + ' мин'} · ${cat[e.category]}`; }
-    return sw('event', e.id, `<button class="tl-item ${state}" data-act="openEvent" data-id="${esc(e.id)}"><span class="tl-time">${e.startTime}<small>${e.endTime}</small></span><span class="tl-dot ${esc(e.category)}"></span><span class="tl-body"><b>${esc(e.title)}</b><small>${esc(note)}</small></span></button>`);
-  }).join('');
+  const today = ymd(), evs = eventsOn(today), tasks = S.tasks.filter(t => (t.deadline || t.date) === today);
+  const n = new Date(), nowM = n.getHours() * 60 + n.getMinutes(), nowHM = `${pad(n.getHours())}:${pad(n.getMinutes())}`;
+  let html = '';
+  if (tasks.length) html += `<div class="tl-quick">${tasks.map(t => { const c = CAT_COLOR[t.category] || '#E3A3A6';
+    return `<button class="tq ${t.done ? 'done' : ''}" style="--c:${c}" data-act="toggleTask" data-id="${esc(t.id)}" aria-pressed="${t.done}"><span class="tq-ico">${evIconSvg(guessEvIcon(t.title, t.category))}</span><span class="tq-t">${esc(t.title)}</span></button>`; }).join('')}</div>`;
+  if (!evs.length) { box.innerHTML = html + `<div class="empty">В расписании на сегодня пусто 🌿</div>`; return; }
+  const fmtDur = m => m >= 60 ? `${Math.floor(m / 60)} ч${m % 60 ? ' ' + (m % 60) + ' мин' : ''}` : `${m} мин`;
+  let nowShown = evs.some(e => toMin(e.startTime) <= nowM && toMin(e.endTime) > nowM);
+  html += '<div class="tl2">';
+  evs.forEach(e => {
+    const s = toMin(e.startTime), en = toMin(e.endTime), dur = en - s, col = evColor(e), done = !!(e.doneDates || {})[today];
+    const state = en <= nowM ? 'past' : s <= nowM ? 'now' : 'next';
+    if (!nowShown && state === 'next') { nowShown = true; html += `<div class="tl2-now"><span>${nowHM}</span></div>`; }
+    // fade: past fades out over ~3 h, the future fades in as it approaches
+    const op = state === 'now' ? 1 : state === 'past' ? Math.max(.3, 1 - (nowM - en) / 180 * .7) : (s - nowM <= 60 ? 1 : Math.max(.42, 1 - (s - nowM - 60) / 300 * .58));
+    const ph = Math.round(Math.min(150, 50 + Math.max(0, dur - 20) * .85));
+    const sub = state === 'now' ? `<small class="now-txt">ещё ${fmtDur(en - nowM)}</small>` : `<small>${e.startTime}–${e.endTime} (${fmtDur(dur)})</small>`;
+    html += sw('event', e.id, `<div class="tl2-item ${state} ${done ? 'done' : ''}" style="--c:${col};opacity:${op.toFixed(2)}">
+      <div class="tl2-time" style="min-height:${ph}px"><b>${e.startTime}</b>${state === 'now' ? `<em>${nowHM}</em>` : ''}${dur >= 45 ? `<span>${e.endTime}</span>` : ''}</div>
+      <div class="tl2-rail"><span class="tl2-pill" style="height:${ph}px">${evIconSvg(evIcon(e))}</span></div>
+      <button class="tl2-body" data-act="openEvent" data-id="${esc(e.id)}">${sub}<b>${esc(e.title)}</b></button>
+      <button class="tl-check ${done ? 'on' : ''}" data-act="evDone" data-id="${esc(e.id)}" aria-label="Отметить выполненным" aria-pressed="${done}">✓</button>
+    </div>`);
+  });
+  if (!nowShown) html += `<div class="tl2-now"><span>${nowHM}</span></div>`;
+  box.innerHTML = html + '</div>';
 }
 
 /* ---------- Focus tab: widgets + pages ---------- */
@@ -1855,7 +2017,8 @@ function openEventModal(id, forToday) {
   editing.event = id ?? null; const e = id != null ? S.schedule.find(x => same(x.id, id)) : null;
   const base = forToday ? ymd() : selectedDay;
   $('eventModalTitle').textContent = e ? 'Изменить событие' : 'Новое событие';
-  $('eventTitleInput').value = e?.title ?? ''; catDraft.event = e?.category ?? 'study'; renderCats('event'); $('eventPrioritySelect').value = e?.priority ?? 'mid';
+  $('eventTitleInput').value = e?.title ?? ''; catDraft.event = e?.category ?? 'study'; renderCats('event');
+  evDraft = { icon: e?.icon || guessEvIcon(e?.title || '', e?.category || 'study'), color: e?.color || null, touched: !!e?.icon, colorTouched: !!e?.color }; renderEvDraft(); $('eventPrioritySelect').value = e?.priority ?? 'mid';
   $('eventDateInput').value = e && !e.repeat ? e.date : base;
   $('eventDaySelect').value = String(e?.day ?? weekdayIdx(parseYmd(base)));
   setEventRepeatUI(e ? e.repeat : false);
@@ -1871,10 +2034,10 @@ function saveEvent(alsoReminder) {
   if (toMin(endTime) <= toMin(startTime)) return toast('Время «до» должно быть позже времени «от»');
   const repeat = $('eventRepeat').checked, date = $('eventDateInput').value;
   if (!repeat && !isYmd(date)) return toast('Выберите дату');
-  const data = { title, category: catDraft.event, priority: $('eventPrioritySelect').value, startTime, endTime,
+  const data = { title, ...(evDraft.touched ? { icon: evDraft.icon } : {}), ...(evDraft.colorTouched && evDraft.color ? { color: evDraft.color } : {}), category: catDraft.event, priority: $('eventPrioritySelect').value, startTime, endTime,
     ...(repeat ? { repeat: true, day: parseInt($('eventDaySelect').value), date: undefined } : { repeat: false, date, day: weekdayIdx(parseYmd(date)) }) };
   const ex = editing.event != null ? S.schedule.find(x => same(x.id, editing.event)) : null;
-  if (ex) { Object.assign(ex, data); if (repeat) delete ex.date; touch(ex); commit('schedule'); renderTimetable(); renderCalendar(); }
+  if (ex) { Object.assign(ex, data); if (repeat) delete ex.date; if (!evDraft.touched) delete ex.icon; if (!evDraft.colorTouched) delete ex.color; touch(ex); commit('schedule'); renderTimetable(); renderCalendar(); }
   else {
     addScheduleEvent(data); renderCalendar();
     if (alsoReminder) {
@@ -1978,7 +2141,7 @@ function renderPomodoro() {
   document.querySelectorAll('.preset-btn').forEach(x => x.classList.toggle('active', +x.dataset.f === c.focus && +x.dataset.r === c.rest));
   const g = focusGold(c.focus);
   $('pomoReward').textContent = g ? `Каждый фокус — ${g} монет${c.rounds > 1 ? ` · все ${rnd(c.rounds)} — ещё +${ROUNDS_BONUS}` : ''}` : 'Фокус от 10 минут приносит монеты';
-  document.title = pomo.endAt ? `⏱ ${$('pomodoroDisplay').textContent} · Khadi's Diary` : "Khadi's Diary • Life Planner PWA";
+  document.title = pomo.endAt ? `⏱ ${$('pomodoroDisplay').textContent} · Khadi's Diary` : "Khadi's Diary";
   updateMiniTimer(); if (curTab === 'focus' && !curPage) renderPomoWidget();
 }
 function updateMiniTimer() {
@@ -2364,10 +2527,21 @@ async function testAi() {
    Weather (city-local time, WMO codes, offline cache)
    ===================================================================== */
 let weather = load(K.weather, null);
+const PIN_ICON = '<svg viewBox="0 0 24 24" style="stroke:#D9776A"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>';
 function wxEmoji(c) {
-  if (c === 0) return '☀️'; if (c === 1) return '🌤️'; if (c === 2) return '⛅'; if (c === 3) return '☁️'; if (c === 45 || c === 48) return '🌫️';
-  if (c >= 51 && c <= 57) return '🌦️'; if ((c >= 61 && c <= 67) || (c >= 80 && c <= 82)) return '🌧️'; if ((c >= 71 && c <= 77) || c === 85 || c === 86) return '🌨️'; if (c >= 95) return '⛈️'; return '🌡️';
+  const sun = '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/>';
+  const cloud = '<path d="M7 18.5h10a4 4 0 0 0 .4-8A5.5 5.5 0 0 0 6.8 9.6 4.5 4.5 0 0 0 7 18.5z"/>';
+  const cloudHi = '<path d="M7 15.5h10a4 4 0 0 0 .4-8A5.5 5.5 0 0 0 6.8 6.6 4.5 4.5 0 0 0 7 15.5z"/>';
+  const S = (inner, col) => `<svg viewBox="0 0 24 24" style="stroke:${col}">${inner}</svg>`;
+  if (c === 0) return S(sun, '#E2B53E');
+  if (c === 1 || c === 2) return S('<circle cx="8.5" cy="8.5" r="3.2"/><path d="M8.5 2.8v1.2M3 8.5h1.2M4.6 4.6l.9.9M12.4 4.6l-.9.9"/><path d="M9 19h8.5a3.5 3.5 0 0 0 .3-7 4.8 4.8 0 0 0-9.1-1A3.9 3.9 0 0 0 9 19z"/>', '#7C86D2');
+  if (c === 3 || c === 45 || c === 48) return S(cloud, '#8A8FA6');
+  if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) return S(cloudHi + '<path d="M8 18l-1 2.5M12 18l-1 2.5M16 18l-1 2.5"/>', '#6E78C8');
+  if ((c >= 71 && c <= 77) || c === 85 || c === 86) return S(cloudHi + '<path d="M9 19.5h.01M12 21h.01M15 19.5h.01"/>', '#8FA6D0');
+  if (c >= 95) return S(cloudHi + '<path d="M12.5 14l-2 3.5h3l-2 3.5"/>', '#6E78C8');
+  return S(sun, '#E2B53E');
 }
+
 const fmtT = t => `${t > 0 ? '+' : ''}${Math.round(t)}°C`;
 async function fetchWeatherAt(lat, lon, name) {
   try {
@@ -2396,14 +2570,14 @@ function refreshWeather() {
 }
 function renderWeather() {
   const has = !!(lsGet(K.city) || load(K.geo, null));
-  if (!weather || !has) { $('weatherTemp').textContent = has ? '--°C' : 'Погода'; $('weatherCity').textContent = has ? lsGet(K.city) : 'город?'; $('weatherIcon').textContent = has ? '🌤️' : '📍'; return; }
-  $('weatherTemp').textContent = fmtT(weather.temp); $('weatherCity').textContent = weather.city; $('weatherIcon').textContent = wxEmoji(weather.code);
+  if (!weather || !has) { $('weatherTemp').textContent = has ? '--°C' : 'Погода'; $('weatherCity').textContent = has ? lsGet(K.city) : 'город?'; $('weatherIcon').innerHTML = has ? wxEmoji(1) : PIN_ICON; return; }
+  $('weatherTemp').textContent = fmtT(weather.temp); $('weatherCity').textContent = weather.city; $('weatherIcon').innerHTML = wxEmoji(weather.code);
 }
 function renderWeatherModal() {
   const has = !!(lsGet(K.city) || load(K.geo, null)), geo = load(K.geo, null);
   $('wxPlace').textContent = has ? (geo ? '📍 ' : '') + (weather?.city || lsGet(K.city)) : '';
   $('hourlyForecastContainer').innerHTML = !has ? `<div class="empty">Укажите, где вы находитесь, — и здесь появится прогноз 🌤️</div>`
-    : weather ? weather.hours.map(h => `<div class="hourly-row"><span><b>${esc(h.t)}</b></span><span>${wxEmoji(h.code)}</span><span style="color:var(--accent);font-weight:700">${fmtT(h.temp)}</span></div>`).join('')
+    : weather ? weather.hours.map(h => `<div class="hourly-row"><span><b>${esc(h.t)}</b></span><span class="wx-ico">${wxEmoji(h.code)}</span><span style="color:var(--accent);font-weight:700">${fmtT(h.temp)}</span></div>`).join('')
     : `<div class="empty">Нет данных о погоде — проверьте интернет</div>`;
   $('wxLocateBtn').textContent = geo ? '📍 Обновить местоположение' : '📍 Определить автоматически';
 }
@@ -2454,10 +2628,11 @@ function renderFocusOfDay() {
 }
 function renderHeader() {
   const h = new Date().getHours(), hello = h < 5 ? 'Доброй ночи' : h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
-  $('displayGreeting').textContent = `${lsGet(K.name, 'Хади')} 👋`;
+  $('displayGreeting').textContent = lsGet(K.name, 'Хади');
   const d = new Date().toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); $('displayDate').textContent = `${hello} · ${d}`;
 }
-function avatarHTML() { const a = lsGet(K.avatar); return /^data:image\/(png|jpe?g|webp|gif);base64,/.test(a) ? `<img alt="" src="${esc(a)}">` : '🌸'; }
+const AV_ICON = '<svg class="av-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11"/><path d="M12 13C12 8 8.5 5 4 5c0 4.5 3.5 8 8 8z"/><path d="M12 11c0-4 3-7 8-7 0 4-3 7-8 7z"/></svg>';
+function avatarHTML() { const a = lsGet(K.avatar); return /^data:image\/(png|jpe?g|webp|gif);base64,/.test(a) ? `<img alt="" src="${esc(a)}">` : AV_ICON; }
 function updateProfileUI() {
   renderHeader();
   $('settingsNameInput').value = lsGet(K.name, 'Хади');
@@ -2490,7 +2665,7 @@ function updateSyncUI(skipBadge) {
   $('syncAccountLine').textContent = email ? `Вы вошли как ${email}. ${$('syncStatusText').textContent}`
     : saved ? `Email ${saved} ещё не подтверждён. Нажмите «Отправить код», затем введите код из письма. Пока данные хранятся только на этом устройстве.`
     : 'Войдите по email, чтобы данные синхронизировались между устройствами. Пока вы не вошли — всё хранится только на этом устройстве.';
-  if (!skipBadge && !email) { $('syncStatusText').textContent = sb ? '☁️ Только на этом устройстве' : '⚠️ Облако недоступно (офлайн)'; $('syncStatus').classList.add('offline'); }
+  if (!skipBadge && !email) { $('syncStatusText').textContent = sb ? 'Только на этом устройстве' : 'Облако недоступно (офлайн)'; $('syncStatus').classList.add('offline'); }
   const el = $('settingsEmailInput'); if (el) el.value = email || saved;
   const hint = $('profileEmailHint');
   if (hint) hint.textContent = email ? '✓ Синхронизация включена' : saved ? 'Не подтверждён — подтвердить в «Синхронизации» ›' : 'Добавить email в «Синхронизации» ›';
@@ -2532,18 +2707,18 @@ function mergePayload(p) {
   rolloverHabits(); ['tasks', 'habits', 'goals', 'schedule', 'wheel', 'tomb'].forEach(k => save(persistKey[k], S[k])); save(K.pet, S.pet);
 }
 async function syncNow(manual) {
-  if (!sb) return setSync('⚠️ Облако недоступно (офлайн)', true), false;
+  if (!sb) return setSync('Облако недоступно (офлайн)', true), false;
   const email = session?.user?.email?.toLowerCase(); if (!email) return false;
   if (syncing) { syncQueued = true; return; }
   syncing = true;
   try {
-    setSync('☁️ Синхронизация…', false);
+    setSync('Синхронизация…', false);
     const { data, error } = await sb.from('user_data').select('payload').eq('email', email).maybeSingle(); if (error) throw error;
     if (data?.payload) { mergePayload(data.payload); renderAll(); }
     const { error: e2 } = await sb.from('user_data').upsert({ email, payload: buildPayload(), updated_at: new Date().toISOString() }, { onConflict: 'email' }); if (e2) throw e2;
-    setSync(`☁️ Синхронизировано · ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`, false); if (manual) toast('✅ Синхронизировано');
+    setSync(`Синхронизировано · ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`, false); if (manual) toast('✅ Синхронизировано');
     return true;
-  } catch (e) { console.warn(e); setSync('⚠️ Не удалось синхронизировать — данные сохранены локально', true); if (manual) toast('❌ ' + String(e.message || e).slice(0, 100)); return false; }
+  } catch (e) { console.warn(e); setSync('Не удалось синхронизировать — данные сохранены локально', true); if (manual) toast('❌ ' + String(e.message || e).slice(0, 100)); return false; }
   finally { syncing = false; if (syncQueued) { syncQueued = false; scheduleSync(); } }
 }
 async function signIn(emailArg) {
@@ -2562,7 +2737,7 @@ async function verifyOtp() {
   const { error } = await sb.auth.verifyOtp({ email, token, type: 'email' });
   if (error) return toast('❌ ' + error.message); $('otpCode').value = ''; $('otpBox').classList.add('hidden'); toast('✅ Вы вошли');
 }
-async function signOut() { if (sb) await sb.auth.signOut(); session = null; updateSyncUI(); setSync('☁️ Только на этом устройстве', true); toast('Вы вышли из облака (данные на устройстве сохранены)'); }
+async function signOut() { if (sb) await sb.auth.signOut(); session = null; updateSyncUI(); setSync('Только на этом устройстве', true); toast('Вы вышли из облака (данные на устройстве сохранены)'); }
 function wipeLocal() { Object.keys(localStorage).filter(k => k.startsWith('pwa_') || k.startsWith('sb-')).forEach(k => localStorage.removeItem(k)); }
 async function logout() {
   if (!confirm('Выйти и удалить данные с этого устройства? Если вы входили в облако, данные там останутся.')) return;
@@ -2614,13 +2789,15 @@ const ACT = {
   openTask: d => openTaskModal(d.id, d.today), saveTask, deleteTask, toggleTask: d => toggleTask(d.id),
   selectDay: d => { selectedDay = d.date; focusMonthOn(d.date); renderCalendar(); renderTasks(); },
   monthPrev: () => { monthOffset--; renderCalendar(); }, monthNext: () => { monthOffset++; renderCalendar(); },
-  openGoal: d => openGoalModal(d.id), saveGoal, deleteGoal, toggleGoal: d => toggleGoal(d.id), goalCat: d => { goalCat = d.c; renderGoalCats(); }, pickCat: d => { catDraft[d.kind] = d.c; if (d.kind === 'goal') goalCat = d.c; renderCats(d.kind); },
+  openGoal: d => openGoalModal(d.id), saveGoal, deleteGoal, toggleGoal: d => toggleGoal(d.id), goalCat: d => { goalCat = d.c; renderGoalCats(); }, pickCat: d => { catDraft[d.kind] = d.c; if (d.kind === 'goal') goalCat = d.c; renderCats(d.kind); if (d.kind === 'event' && evDraft) { if (!evDraft.touched) evDraft.icon = guessEvIcon($('eventTitleInput').value, d.c); renderEvDraft(); } },
   swEdit: d => { swClose(); ({ task: openTaskModal, event: openEventModal, goal: openGoalModal })[d.kind](d.id); },
   swDel: d => { swClose(); deleteWithUndo(COLL_OF[d.kind], d.id); },
   openHabit: d => openHabitModal(d.id), saveHabit, toggleHabit: d => toggleHabit(d.id, d.date),
   deleteHabitModal: () => { if (editing.habit != null && deleteHabit(editing.habit)) closeModal('habitModal'); },
   hbIcon: d => { hbDraft.icon = d.icon; hbDraft.iconTouched = true; renderHabitDraft(); }, hbRepeat: d => { hbDraft.repeat[+d.i] = !hbDraft.repeat[+d.i]; renderHabitDraft(); },
   habitDay: d => { habitDay = d.date; renderHabits(); }, habitWeek: d => { habitWeekOff += +d.d; habitDay = ymd(addDays(mondayOf(), habitWeekOff * 7 + (habitWeekOff === 0 ? weekdayIdx() : 0))); renderHabits(); },
+  evIcon: d => { evDraft.icon = d.icon; evDraft.touched = true; renderEvDraft(); }, evColor: d => { evDraft.color = d.color; evDraft.colorTouched = true; renderEvDraft(); },
+  evDone: d => { const e = S.schedule.find(x => same(x.id, d.id)); if (!e) return; const t = ymd(); e.doneDates = { ...(e.doneDates || {}) }; if (e.doneDates[t]) delete e.doneDates[t]; else e.doneDates[t] = 1; touch(e); commit('schedule'); renderTimeline(); },
   openPage: d => openPage(d.page), closePage, openPageFrom: d => openPage(d.page),
   openEvent: d => openEventModal(d.id, d.today), saveEvent: () => saveEvent(false), saveEventReminder: () => saveEvent(true), deleteEvent,
   saveSnapshot, wheelToday: () => { wheelDate = ymd(); renderWheel(); },
@@ -2637,6 +2814,7 @@ const ACT = {
 document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (!el) return; const fn = ACT[el.dataset.act]; if (fn) fn(el.dataset, el, e); });
 document.addEventListener('input', e => {
   const t = e.target;
+  if (t.id === 'eventTitleInput' && evDraft && !evDraft.touched) { evDraft.icon = guessEvIcon(t.value, catDraft.event); renderEvDraft(); }
   if (t.id === 'newHabitTitle' && hbDraft && !hbDraft.iconTouched) { hbDraft.icon = guessIcon(t.value); renderHabitDraft(); }
   if (t.dataset.wheel) setWheelValue(t.dataset.wheel, t.value);
 });
@@ -2668,7 +2846,7 @@ function renderAll() {
 }
 function boot() {
   document.querySelectorAll('select[data-days]').forEach(s => { s.innerHTML = DAYS_FULL.map((n, i) => `<option value="${i}">${n}</option>`).join(''); });
-  applyTheme(lsGet(K.theme, 'terracotta')); reloadState(); rolloverHabits(); buildWheelControls(); pomoRestore();
+  applyTheme(lsGet(K.theme, 'daylight')); reloadState(); rolloverHabits(); buildWheelControls(); pomoRestore();
   const legacy = lsGet(K.email) || lsGet(K.name); if (!lsGet(K.onboarded) && !legacy) $('onboardingScreen').classList.remove('hidden'); else lsSet(K.onboarded, '1');
   renderAll(); refreshWeather(); initSupabase();
   setInterval(() => { renderHeader(); updateNowLine(); renderTimeline(); }, 60000);
