@@ -1020,7 +1020,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 5.0.1</div>
+      <div>Версия 5.0.2</div>
     </div>
   </div>
 </main>
@@ -2484,7 +2484,7 @@ function localAiReply(prompt) {
   }
   return MOTIVATION[Math.floor(Math.random() * MOTIVATION.length)] + '\n\n(Я пока работаю без AI — войдите в облако в настройках, чтобы поболтать по-настоящему.)';
 }
-const AI_FUNCTION = 'pet-chat';
+const AI_FUNCTION = 'rostok-ai';
 async function callShared(contents, system) {
   const { data, error } = await sb.functions.invoke(AI_FUNCTION, { body: { contents, system } });
   if (error) {
@@ -2495,8 +2495,8 @@ async function callShared(contents, system) {
       if (m) msg = m;
     } catch {}
     if (/Failed to send|NetworkError|Failed to fetch/i.test(msg)) msg = 'нет связи с сервером';
-    else if (status === 404) msg = 'функция pet-chat не найдена — проверьте имя функции в Supabase';
-    else if (status === 401 && /jwt/i.test(msg)) msg = 'Invalid JWT — выключите «Verify JWT» в настройках функции pet-chat';
+    else if (status === 404) msg = 'функция rostok-ai не найдена — проверьте имя функции в Supabase';
+    else if (status === 401 && /jwt/i.test(msg)) msg = 'Invalid JWT — выключите «Verify JWT» в настройках функции rostok-ai';
     if (status) msg += ` (код ${status})`;
     throw new Error(msg);
   }
