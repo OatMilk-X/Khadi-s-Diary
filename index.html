@@ -1030,7 +1030,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 5.1.0</div>
+      <div>Версия 5.1.1</div>
     </div>
   </div>
 </main>
@@ -1575,13 +1575,23 @@ const WHEEL_DEFAULT = { health: 7, self: 6, rest: 8, study: 7, work: 6, sport: 7
 
 function reloadState() {
   S.tasks = arr(load(K.tasks, [])).map(normTask);
-  S.habits = arr(load(K.habits, null) ?? [
-    { id: 1, title: 'Get up early ⏰', freq: 'Everyday' }, { id: 2, title: 'Reading 📚', freq: '5 times a week' }]).map(normHabit);
+  S.habits = arr(load(K.habits, [])).map(normHabit);
   S.goals = arr(load(K.goals, [])).map(normGoal);
   S.schedule = arr(load(K.schedule, [])).map(normEvent);
   S.wheel = normWheel(load(K.wheel, {}));
   S.pet = normGarden(load(K.pet, {}));
   S.tomb = normTomb(load(K.tomb, {}));
+  dropSeedHabits();
+}
+/* Old versions seeded two demo habits (ids 1 and 2) on every fresh device. Remove them with a tombstone so sync never brings them back.
+   Real habits always get a uid(), so only these exact seed items match. */
+const SEED_HABITS = { 1: 'Get up early', 2: 'Reading' };
+function dropSeedHabits() {
+  const isSeed = h => SEED_HABITS[String(h.id)] === h.title;
+  if (!S.habits.some(isSeed)) return false;
+  const t = now(); S.habits.filter(isSeed).forEach(h => { S.tomb.habits[String(h.id)] = Math.max(t, (h.updatedAt || 0) + 1); });
+  S.habits = S.habits.filter(h => !isSeed(h)); save(K.habits, S.habits); save(K.tomb, S.tomb);
+  return true;
 }
 const persistKey = { tasks: K.tasks, habits: K.habits, goals: K.goals, schedule: K.schedule, wheel: K.wheel, tomb: K.tomb };
 function commit(key) { save(persistKey[key], S[key]); scheduleSync(); }
@@ -2726,7 +2736,7 @@ function mergePayload(p) {
     if (p.userName) lsSet(K.name, String(p.userName).slice(0, 60)); lsSet(K.surname, String(p.userSurname || '').slice(0, 60)); if (p.userCity) lsSet(K.city, String(p.userCity).slice(0, 80));
     if (typeof p.userAvatar === 'string' && /^data:image\//.test(p.userAvatar) && p.userAvatar.length < 400000) lsSet(K.avatar, p.userAvatar); lsSet(K.profileTs, String(rts));
   } else if (!lsGet(K.name) && p.userName) lsSet(K.name, String(p.userName).slice(0, 60));
-  rolloverHabits(); ['tasks', 'habits', 'goals', 'schedule', 'wheel', 'tomb'].forEach(k => save(persistKey[k], S[k])); save(K.pet, S.pet);
+  dropSeedHabits(); rolloverHabits(); ['tasks', 'habits', 'goals', 'schedule', 'wheel', 'tomb'].forEach(k => save(persistKey[k], S[k])); save(K.pet, S.pet);
 }
 async function syncNow(manual) {
   if (!sb) return setSync('Облако недоступно (офлайн)', true), false;
