@@ -5,10 +5,16 @@ Personal planner PWA (Russian UI) for Vee and his girlfriend. Live at https://oa
 ## Files
 - `index.html` — the whole app: inline CSS + JS in one IIFE. Clicks go through `data-act` attributes and an `ACT` map.
 - `sw.js` — service worker. Navigation is network-first; static files, CDN and Google Fonts are cache-first. **Bump `VERSION` on every release** (and the "Версия" label in Settings).
-- `manifest.webmanifest`, `icon-*.png`.
+- `manifest.webmanifest`, `manifest-test.webmanifest` (test copy), `icon-*.png`.
 - `beta/` — old beta; now only redirects to `/` and unregisters its own service worker.
 - `supabase/supabase-setup.sql` — tables `user_data`, `ai_usage`, RPC `bump_ai_usage`, RLS.
 - `supabase/functions/rostok-ai/index.ts` — Edge Function for the Росток AI chat (Gemini, retry + fallback model). Deployed by hand in the Supabase dashboard.
+
+## Navigation
+Bottom tabs: Колесо, Фокус, Главная, Планер, Меню. Меню (`tab-menu`) is a hub: `#menuHub` rows open `.mpage` pages (`menu-page-<name>`) via `openMenuPage`. Settings lives at Меню › Настройки. To add a section: one `.hub-row` + one `.mpage`.
+
+## Test copy
+Any address other than `oatmilk-x.github.io/Khadi-s-Diary/` runs in test mode (`window.KD_TEST`): localStorage keys get a `kdtest:` prefix, the service worker uses `kdtest-` caches, sync is pull-only (never writes to Supabase), "Удалить облачные данные" only clears the test copy, and a «Тестовая копия» badge shows.
 
 ## Data (localStorage, `pwa_*` keys)
 - Tasks `{id,title,category(work|study|gym|personal),date,deadline,comment,priority,done,updatedAt}`

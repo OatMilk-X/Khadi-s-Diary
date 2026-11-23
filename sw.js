@@ -1,8 +1,11 @@
 /* Khadi's Diary service worker: offline app shell.
    Bump VERSION whenever you deploy a new index.html. */
-const VERSION = 'v5.1.1';
-const CACHE = 'khadis-diary-' + VERSION;
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png',
+const VERSION = 'v5.2.0';
+// The test copy (any address other than the live one) keeps its own caches, so it never touches the live app's.
+const TEST = !(self.location.hostname === 'oatmilk-x.github.io' && /^\/khadi-s-diary\//i.test(self.location.pathname));
+const PREFIX = TEST ? 'kdtest-' : 'khadis-diary-';
+const CACHE = PREFIX + VERSION;
+const SHELL = ['./', './index.html', './manifest.webmanifest', './manifest-test.webmanifest', './icon-192.png', './icon-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'];
 
 self.addEventListener('install', e => {
@@ -11,7 +14,7 @@ self.addEventListener('install', e => {
 });
 self.addEventListener('message', e => { if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting(); });
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('khadis-diary-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith(PREFIX) && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;

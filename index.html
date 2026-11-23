@@ -15,7 +15,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
-<script>try{var t=localStorage.getItem("pwa_theme_beta");document.documentElement.dataset.theme=(t==="sage"||t==="terracotta")?t:"daylight"}catch(e){}</script>
+<script>
+/* Test copy: anywhere except the live address runs in test mode, with its own storage (kdtest:*), its own caches and read-only cloud sync. */
+window.KD_TEST=!(location.hostname==="oatmilk-x.github.io"&&/^\/khadi-s-diary(\/|$)/i.test(location.pathname));
+try{var t=localStorage.getItem((window.KD_TEST?"kdtest:":"")+"pwa_theme_beta");document.documentElement.dataset.theme=(t==="sage"||t==="terracotta")?t:"daylight"}catch(e){}
+if(window.KD_TEST){document.querySelector('link[rel="manifest"]').href="manifest-test.webmanifest";document.querySelector('meta[name="apple-mobile-web-app-title"]').content="Diary Тест";document.title="Khadi's Diary · Тест"}
+</script>
 <style>
 :root{
   --bg:#F5F0E9; --text-main:#2B2A28; --text-sub:#8C867E; --faint:#C9C1B6;
@@ -242,6 +247,14 @@ svg{max-width:100%;height:auto}
 .menu-row .l{display:flex;align-items:center;gap:14px}
 .ico{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 .chev{width:16px;height:16px;stroke:var(--faint);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* menu hub */
+.hub-row{padding:16px 18px}
+.hub-ico{width:42px;height:42px;border-radius:15px;background:rgba(var(--accent-rgb),.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hub-ico .ico{width:21px;height:21px}
+.hub-txt b{display:block;font-size:15px;font-weight:600;color:var(--text-main)}
+.hub-txt small{display:block;font-size:12px;color:var(--text-sub);margin-top:3px;font-weight:400}
+.test-badge{display:inline-flex;align-items:center;gap:6px;margin:0 auto 8px;padding:5px 12px;border-radius:999px;background:var(--sun,#F2CF63);color:#26304F;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.test-badge-wrap{display:flex;justify-content:center}
 .theme-opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .theme-opt{background:var(--bg);border:none;border-radius:22px;padding:16px 12px;box-shadow:var(--sh-sm);cursor:pointer;text-align:center}
 .theme-opt.active{box-shadow:var(--sh-in),inset 0 0 0 1.5px var(--accent)}
@@ -381,7 +394,7 @@ svg{max-width:100%;height:auto}
 .w-bars i{flex:1;border-radius:999px;background:var(--track);min-height:8px;position:relative}
 .w-bars i.today{background:var(--accent)}
 .w-bars i.has{background:rgba(var(--accent-rgb),.45)}
-.fpage{animation:pageIn .28s cubic-bezier(.2,.8,.2,1)}
+.fpage,.mpage{animation:pageIn .28s cubic-bezier(.2,.8,.2,1)}
 @keyframes pageIn{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
 .page-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin:4px 0 18px}
 .page-back{justify-self:start;border:none;background:var(--bg);box-shadow:var(--sh-sm);border-radius:999px;padding:9px 16px 9px 12px;font-size:13px;font-weight:500;color:var(--accent);cursor:pointer}
@@ -794,7 +807,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
 <header>
   <div class="header-top">
-    <button class="profile-mini" data-act="tab" data-tab="settings" aria-label="Профиль и настройки">
+    <button class="profile-mini" data-act="openMenuPage" data-menu="settings" aria-label="Профиль и настройки">
       <div class="profile-avatar-mini" id="headerAvatarBox"></div>
       <div><div class="sub-greeting" id="displayDate" style="margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><div class="greeting" id="displayGreeting">Привет 👋</div></div>
     </button>
@@ -806,6 +819,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
       </button>
     </div>
   </div>
+  <div class="test-badge-wrap hidden" id="testBadge"><span class="test-badge">Тестовая копия</span></div>
   <div class="sync-badge offline" id="syncStatus"><span id="syncStatusText">Проверка…</span></div>
 </header>
 
@@ -943,8 +957,18 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
     </div>
   </div>
 
-  <!-- Settings -->
-  <div id="tab-settings" class="tab-content">
+  <!-- Menu: a hub of sections. To add a section: one .hub-row in #menuHub + one .mpage with id menu-page-<name>. -->
+  <div id="tab-menu" class="tab-content">
+    <div id="menuHome">
+      <div class="wordmark" style="padding-bottom:18px"><div class="wm-title" style="font-size:20px">MENU</div><div class="wm-sub">ВСЕ РАЗДЕЛЫ</div></div>
+      <div id="menuHub" class="settings-group" style="padding:0;overflow:hidden">
+        <button class="menu-row hub-row" data-act="openMenuPage" data-menu="settings"><span class="l"><span class="hub-ico"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="hub-txt"><b>Настройки</b><small>Профиль, AI, тема, синхронизация</small></span></span><svg class="chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+    </div>
+
+  <!-- Menu › Settings -->
+  <div class="mpage hidden" id="menu-page-settings">
+    <div class="page-head"><button class="page-back" id="settingsBackBtn" data-act="settingsBack">‹ Меню</button><span class="page-title" id="settingsTitle">Настройки</span><span class="page-extra"></span></div>
     <div id="settingsMainMenu" class="settings-group" style="padding:0;overflow:hidden">
       <button class="menu-row" data-act="openSettings" data-section="profile"><span class="l"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Профиль</span><svg class="chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       <button class="menu-row" data-act="openSettings" data-section="character"><span class="l"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21V11"/><path d="M12 13C12 8 8.5 5 4 5c0 4.5 3.5 8 8 8z"/><path d="M12 11c0-4 3-7 8-7 0 4-3 7-8 7z"/></svg>AI-помощник</span><svg class="chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
@@ -952,9 +976,6 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
       <button class="menu-row" data-act="openSettings" data-section="sync"><span class="l"><svg class="ico" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>Синхронизация</span><svg class="chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       <button class="menu-row" data-act="openSettings" data-section="account"><span class="l"><svg class="ico" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Аккаунт и данные</span><svg class="chev" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
-    <div id="settingsBackBtnContainer" class="hidden" style="margin-bottom:12px">
-      <button class="btn-secondary" style="width:auto;padding:8px 14px;margin-top:0" data-act="closeSettings">‹ Назад к настройкам</button>
-    </div>
 
     <div id="settings-cat-profile" class="settings-section-pane hidden">
       <div class="settings-group">
@@ -996,6 +1017,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
     <div id="settings-cat-sync" class="settings-section-pane hidden">
       <div class="settings-group">
         <div class="settings-group-title">Синхронизация</div>
+        <div id="syncTestNote" class="hint hidden" style="margin-top:0;color:var(--text-main)">🧪 Тестовая копия: данные из облака подтягиваются сюда, но отсюда в облако ничего не отправляется. Основное приложение не меняется.</div>
         <div id="syncAccountLine" class="hint" style="margin-top:0"></div>
         <div id="signInBox">
           <div class="input-group"><label for="signInEmail">Email</label><input type="email" id="signInEmail" class="input-field" placeholder="name@example.com" autocomplete="email"></div>
@@ -1030,8 +1052,9 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 5.1.1</div>
+      <div>Версия <span id="appVersion">5.2.0</span></div>
     </div>
+  </div>
   </div>
 </main>
 
@@ -1040,7 +1063,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
   <button class="nav-item" id="nav-focus" data-act="tab" data-tab="focus" aria-label="Фокус"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Фокус</span></button>
   <button class="nav-item active" id="nav-home" data-act="tab" data-tab="home" aria-label="Главная"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Главная</span></button>
   <button class="nav-item" id="nav-tasks" data-act="tab" data-tab="tasks" aria-label="Планер"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Планер</span></button>
-  <button class="nav-item" id="nav-settings" data-act="tab" data-tab="settings" aria-label="Настройки"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Настройки</span></button>
+  <button class="nav-item" id="nav-menu" data-act="tab" data-tab="menu" aria-label="Меню"><svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg><span>Меню</span></button>
 </nav>
 </div>
 <button class="mini-timer hidden" id="miniTimer" data-act="openPage" data-page="timer" aria-label="Вернуться к таймеру">
@@ -1421,9 +1444,10 @@ const K = {
   name: 'pwa_user_name', surname: 'pwa_user_surname', city: 'pwa_user_city', email: 'pwa_user_email', avatar: 'pwa_user_avatar',
   onboarded: 'pwa_onboarded', geo: 'pwa_geo', theme: 'pwa_theme_beta', aiKey: 'pwa_gemini_key', aiModel: 'pwa_gemini_model', pomo: 'pwa_pomo', weather: 'pwa_weather_cache'
 };
-const lsGet = (k, d = '') => { try { const v = localStorage.getItem(k); return v == null ? d : v; } catch { return d; } };
-const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch { toast('Не хватает места в хранилище'); } };
-const load = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } };
+const TEST = !!window.KD_TEST, LSP = TEST ? 'kdtest:' : '';   // test copy keeps its own storage
+const lsGet = (k, d = '') => { try { const v = localStorage.getItem(LSP + k); return v == null ? d : v; } catch { return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(LSP + k, v); } catch { toast('Не хватает места в хранилище'); } };
+const load = (k, d) => { try { const v = localStorage.getItem(LSP + k); return v == null ? d : JSON.parse(v); } catch { return d; } };
 const save = (k, v) => lsSet(k, JSON.stringify(v));
 
 const { PLANTS, POTS, DECOR } = ART;
@@ -1626,20 +1650,38 @@ function switchTab(tab) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.bottom-nav .nav-item').forEach(el => el.classList.remove('active'));
   $('tab-' + tab).classList.add('active'); $('nav-' + tab).classList.add('active');
-  if (tab === 'settings') closeSettingsSection();
+  if (tab === 'menu') closeMenuPage();
   if (tab === 'tasks') scrollTimetableOnce();
   window.scrollTo({ top: 0 });
   updateMiniTimer();
 }
+/* ---------- Menu tab: hub + pages ---------- */
+let curMenuPage = null, curSettings = null;
+const SETTINGS_TITLES = { profile: 'Профиль', character: 'AI-помощник', theme: 'Оформление', sync: 'Синхронизация', account: 'Аккаунт и данные' };
+function openMenuPage(p) {
+  if (curTab !== 'menu') switchTab('menu');
+  curMenuPage = p; $('menuHome').classList.add('hidden');
+  document.querySelectorAll('.mpage').forEach(el => el.classList.toggle('hidden', el.id !== 'menu-page-' + p));
+  if (p === 'settings') closeSettingsSection();
+  window.scrollTo({ top: 0 });
+}
+function closeMenuPage() {
+  curMenuPage = null; document.querySelectorAll('.mpage').forEach(el => el.classList.add('hidden')); $('menuHome').classList.remove('hidden');
+  window.scrollTo({ top: 0 });
+}
+function settingsBack() { if (curSettings) closeSettingsSection(); else closeMenuPage(); }
 function openSettingsSection(id) {
-  $('settingsMainMenu').classList.add('hidden'); $('settingsBackBtnContainer').classList.remove('hidden');
+  if (curMenuPage !== 'settings') openMenuPage('settings');
+  curSettings = id; $('settingsTitle').textContent = SETTINGS_TITLES[id] || 'Настройки'; $('settingsBackBtn').textContent = '‹ Настройки';
+  $('settingsMainMenu').classList.add('hidden'); window.scrollTo({ top: 0 });
   document.querySelectorAll('.settings-section-pane').forEach(p => p.classList.toggle('hidden', p.id !== 'settings-cat-' + id));
   if (id === 'character') { renderGarden(); $('settingsAiApiKey').value = lsGet(K.aiKey); $('settingsAiModel').value = lsGet(K.aiModel, DEFAULT_AI_MODEL); }
   if (id === 'sync') updateSyncUI();
   if (id === 'profile') updateProfileUI();
 }
 function closeSettingsSection() {
-  $('settingsMainMenu').classList.remove('hidden'); $('settingsBackBtnContainer').classList.add('hidden');
+  curSettings = null; $('settingsTitle').textContent = 'Настройки'; $('settingsBackBtn').textContent = '‹ Меню';
+  $('settingsMainMenu').classList.remove('hidden');
   document.querySelectorAll('.settings-section-pane').forEach(p => p.classList.add('hidden'));
 }
 
@@ -2166,7 +2208,7 @@ function renderPomodoro() {
   document.querySelectorAll('.preset-btn').forEach(x => x.classList.toggle('active', +x.dataset.f === c.focus && +x.dataset.r === c.rest));
   const g = focusGold(c.focus);
   $('pomoReward').textContent = g ? `Каждый фокус — ${g} монет${c.rounds > 1 ? ` · все ${rnd(c.rounds)} — ещё +${ROUNDS_BONUS}` : ''}` : 'Фокус от 10 минут приносит монеты';
-  document.title = pomo.endAt ? `⏱ ${$('pomodoroDisplay').textContent} · Khadi's Diary` : "Khadi's Diary";
+  document.title = pomo.endAt ? `⏱ ${$('pomodoroDisplay').textContent} · Khadi's Diary` : "Khadi's Diary" + (TEST ? ' · Тест' : '');
   updateMiniTimer(); if (curTab === 'focus' && !curPage) renderPomoWidget();
 }
 function updateMiniTimer() {
@@ -2619,7 +2661,7 @@ async function wxSetCity() {
   const c = $('wxCityInput').value.trim(); if (!c) return toast('Введите город');
   const name = await fetchWeather(c);
   if (!name) return toast('Не нашли такой город (или нет интернета)');
-  localStorage.removeItem(K.geo); locationChanged(name); $('wxCityInput').value = ''; toast(`🌤️ Погода: ${name}`);
+  localStorage.removeItem(LSP + K.geo); locationChanged(name); $('wxCityInput').value = ''; toast(`🌤️ Погода: ${name}`);
 }
 function wxLocate() {
   if (!navigator.geolocation || !window.isSecureContext) return toast('Геолокация недоступна — введите город вручную');
@@ -2705,7 +2747,7 @@ function updateSyncUI(skipBadge) {
 function initSupabase() {
   if (!window.supabase) { updateSyncUI(); return; }
   try {
-    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, ...(TEST ? { storageKey: LSP + 'sb-auth-token' } : {}) } });
     sb.auth.onAuthStateChange((evt, s) => {
       session = s; if (s?.user?.email) lsSet(K.email, s.user.email.toLowerCase());
       updateSyncUI(); if (s && (evt === 'SIGNED_IN' || evt === 'INITIAL_SESSION')) setTimeout(() => syncNow(), 0);
@@ -2747,6 +2789,7 @@ async function syncNow(manual) {
     setSync('Синхронизация…', false);
     const { data, error } = await sb.from('user_data').select('payload').eq('email', email).maybeSingle(); if (error) throw error;
     if (data?.payload) { mergePayload(data.payload); renderAll(); }
+    if (TEST) { setSync(`Тест · загружено из облака · ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`, false); if (manual) toast('✅ Загружено (тест: в облако не отправляется)'); return true; }
     const { error: e2 } = await sb.from('user_data').upsert({ email, payload: buildPayload(), updated_at: new Date().toISOString() }, { onConflict: 'email' }); if (e2) throw e2;
     setSync(`Синхронизировано · ${new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`, false); if (manual) toast('✅ Синхронизировано');
     return true;
@@ -2770,14 +2813,15 @@ async function verifyOtp() {
   if (error) return toast('❌ ' + error.message); $('otpCode').value = ''; $('otpBox').classList.add('hidden'); toast('✅ Вы вошли');
 }
 async function signOut() { if (sb) await sb.auth.signOut(); session = null; updateSyncUI(); setSync('Только на этом устройстве', true); toast('Вы вышли из облака (данные на устройстве сохранены)'); }
-function wipeLocal() { Object.keys(localStorage).filter(k => k.startsWith('pwa_') || k.startsWith('sb-')).forEach(k => localStorage.removeItem(k)); }
+function wipeLocal() { Object.keys(localStorage).filter(k => k.startsWith(LSP + 'pwa_') || k.startsWith(LSP + 'sb-')).forEach(k => localStorage.removeItem(k)); }
 async function logout() {
   if (!confirm('Выйти и удалить данные с этого устройства? Если вы входили в облако, данные там останутся.')) return;
   try { if (sb) await sb.auth.signOut(); } catch {} wipeLocal(); location.reload();
 }
 async function deleteAccount() {
   const email = session?.user?.email;
-  if (email) {
+  if (TEST) { if (!confirm('Тестовая копия: облако не трогаем. Очистить только данные этой тестовой копии?')) return; }
+  else if (email) {
     const typed = prompt(`Это удалит облачные данные и данные на устройстве.\nДля подтверждения введите свой email (${email}):`);
     if (!typed || typed.trim().toLowerCase() !== email.toLowerCase()) return toast('Email не совпал — отменено');
     try { const { error } = await sb.from('user_data').delete().eq('email', email.toLowerCase()); if (error) throw error; await sb.auth.signOut(); }
@@ -2818,6 +2862,7 @@ const ACT = {
   tab: d => switchTab(d.tab), applyUpdate, closeModal: d => closeModal(d.modal),
   completeOnboarding, skipOnboarding,
   openWeather, wxLocate, wxSetCity, openSettings: d => openSettingsSection(d.section), closeSettings: closeSettingsSection,
+  openMenuPage: d => openMenuPage(d.menu), settingsBack,
   openTask: d => openTaskModal(d.id, d.today), saveTask, deleteTask, toggleTask: d => toggleTask(d.id),
   selectDay: d => { selectedDay = d.date; focusMonthOn(d.date); renderCalendar(); renderTasks(); },
   monthPrev: () => { monthOffset--; renderCalendar(); }, monthNext: () => { monthOffset++; renderCalendar(); },
@@ -2877,6 +2922,7 @@ function renderAll() {
   renderHeader(); renderFocusOfDay(); renderWheel(); renderHabits(); renderHomeHabits(); renderTimeline(); renderWidgets(); renderWeekSelector(); renderTasks(); renderGoals(); renderHomePriorityTasks(); renderTimetable(); updateProfileUI(); renderWeather(); renderPomodoro();
 }
 function boot() {
+  if (TEST) { $('testBadge').classList.remove('hidden'); $('syncTestNote').classList.remove('hidden'); $('appVersion').textContent += ' · тест'; }
   document.querySelectorAll('select[data-days]').forEach(s => { s.innerHTML = DAYS_FULL.map((n, i) => `<option value="${i}">${n}</option>`).join(''); });
   applyTheme(lsGet(K.theme, 'daylight')); reloadState(); rolloverHabits(); buildWheelControls(); pomoRestore();
   const legacy = lsGet(K.email) || lsGet(K.name); if (!lsGet(K.onboarded) && !legacy) $('onboardingScreen').classList.remove('hidden'); else lsSet(K.onboarded, '1');
