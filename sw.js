@@ -1,13 +1,15 @@
 /* Khadi's Diary service worker: offline app shell.
    Bump VERSION whenever you deploy a new index.html. */
-const VERSION = 'v5.0.2';
+const VERSION = 'v5.1.0';
 const CACHE = 'khadis-diary-' + VERSION;
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png',
   'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => c.add(new Request(u, { mode: u.startsWith('http') ? 'cors' : 'same-origin' })).catch(() => {})))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then(c => Promise.all(SHELL.map(u => c.add(new Request(u, u.startsWith('http') ? { mode: 'cors' } : { mode: 'same-origin', cache: 'reload' })).catch(() => {})))));
+  // No skipWaiting here: the new version waits until the app's update banner is tapped.
 });
+self.addEventListener('message', e => { if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('khadis-diary-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });

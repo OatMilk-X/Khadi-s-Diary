@@ -545,6 +545,16 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 :root[data-theme="daylight"] .sync-badge.offline{color:#B08A2E}
 :root[data-theme="daylight"] .focus-line:before{background:var(--sun);width:4px}
 :root[data-theme="daylight"] .toast{background:rgba(38,48,79,.95)}
+.update-banner{position:fixed;top:calc(10px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-140%);width:calc(100% - 32px);max-width:398px;z-index:6000;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 12px;border:none;border-radius:22px;background:var(--surface,#fff);color:var(--text-main);box-shadow:0 14px 34px rgba(46,58,102,.16),0 1px 3px rgba(46,58,102,.06);text-align:left;cursor:pointer;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .25s;opacity:0}
+.update-banner.show{transform:translate(-50%,0);opacity:1}
+.update-banner .ub-ico{flex:none;width:40px;height:40px;border-radius:14px;background:var(--accent-light);display:grid;place-items:center}
+.update-banner .ub-ico svg{width:20px;height:20px;fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.update-banner.busy .ub-ico svg{animation:ubSpin 1s linear infinite}
+@keyframes ubSpin{to{transform:rotate(360deg)}}
+.update-banner .ub-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.update-banner .ub-text b{font-size:14px;font-weight:700;color:var(--ink,var(--text-main))}
+.update-banner .ub-text small{font-size:12px;color:var(--text-sub)}
+.update-banner .ub-go{flex:none;background:var(--ink,var(--accent));color:#fff;font-size:12px;font-weight:600;border-radius:999px;padding:8px 14px}
 :root[data-theme="daylight"] .modal-overlay{background:rgba(38,48,79,.28)}
 :root[data-theme="daylight"] .chat-msg.me{background:var(--ink)}
 :root[data-theme="daylight"] .page-back{color:var(--ink)}
@@ -1020,7 +1030,7 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
 
     <div style="text-align:center;padding:10px 0 20px;color:var(--text-sub);font-size:12px">
       <div style="font-weight:700;color:var(--text-main);margin-bottom:2px">Khadi's Diary</div>
-      <div>Версия 5.0.2</div>
+      <div>Версия 5.1.0</div>
     </div>
   </div>
 </main>
@@ -1045,6 +1055,11 @@ input[type=date].input-field::-webkit-date-and-time-value,input[type=time].input
   <button class="ai-fab" data-act="openAi" aria-label="Открыть AI-помощника"><span id="homePetAvatar"></span><span class="ai-fab-dot"></span></button>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<button class="update-banner hidden" id="updateBanner" data-act="applyUpdate" aria-live="polite">
+  <span class="ub-ico"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><polyline points="20 4 20 9 15 9"/></svg></span>
+  <span class="ub-text"><b>Доступно обновление</b><small>Нажмите, чтобы обновить</small></span>
+  <span class="ub-go">Обновить</span>
+</button>
 <script>
 /* Росток — the AI helper mascot. sprout(expr) → SVG string.
    expr: idle | talk | think | happy | sleepy | thirsty | blink */
@@ -2790,7 +2805,7 @@ function skipOnboarding() { setTimeout(maybeShowAiHint, 1200); lsSet(K.onboarded
    Actions (event delegation — no inline handlers, no ids in JS strings)
    ===================================================================== */
 const ACT = {
-  tab: d => switchTab(d.tab), closeModal: d => closeModal(d.modal),
+  tab: d => switchTab(d.tab), applyUpdate, closeModal: d => closeModal(d.modal),
   completeOnboarding, skipOnboarding,
   openWeather, wxLocate, wxSetCity, openSettings: d => openSettingsSection(d.section), closeSettings: closeSettingsSection,
   openTask: d => openTaskModal(d.id, d.today), saveTask, deleteTask, toggleTask: d => toggleTask(d.id),
@@ -2863,8 +2878,47 @@ function boot() {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) return; renderHeader(); renderAllHabits(); renderTimeline(); renderFocusOfDay(); updatePetUI();
     if (pomo.endAt) { pomoCatchUp(); renderPomodoro(); } if (session) scheduleSync();
+    checkForUpdate();
   });
-  if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+  initUpdates();
+}
+/* =====================================================================
+   App updates. A new sw.js installs and waits; we show a banner.
+   Tap → the waiting worker takes over → page reloads. Only code changes:
+   localStorage (pwa_*) is never touched.
+   ===================================================================== */
+let swReg = null, updTapped = false, updLastCheck = 0;
+function showUpdateBanner() {
+  const b = $('updateBanner'); if (!b.classList.contains('hidden')) return;
+  b.classList.remove('hidden'); requestAnimationFrame(() => requestAnimationFrame(() => b.classList.add('show')));
+}
+function watchWorker(w) {
+  if (!w) return;
+  const check = () => { if (w.state === 'installed' && navigator.serviceWorker.controller) showUpdateBanner(); };
+  check(); w.addEventListener('statechange', check);
+}
+function checkForUpdate(force) {
+  if (!swReg || (!force && Date.now() - updLastCheck < 60000)) return;
+  updLastCheck = Date.now(); swReg.update().catch(() => {});
+}
+function applyUpdate() {
+  const b = $('updateBanner'); if (updTapped) return; updTapped = true;
+  b.classList.add('busy'); b.querySelector('small').textContent = 'Обновляю…';
+  const w = swReg && swReg.waiting;
+  if (!w) return location.reload();
+  w.postMessage({ type: 'SKIP_WAITING' });
+  setTimeout(() => location.reload(), 3000);   // fallback if controllerchange never fires
+}
+function initUpdates() {
+  if (!('serviceWorker' in navigator) || !/^https?:/.test(location.protocol)) return;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (updTapped) location.reload(); });
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    swReg = reg; updLastCheck = Date.now();   // register() already checks once
+    // A worker left waiting from last time: this page was just fetched from the network, so switch quietly.
+    if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+    reg.addEventListener('updatefound', () => watchWorker(reg.installing));
+    setInterval(() => { if (!document.hidden) checkForUpdate(); }, 30 * 60000);
+  }).catch(() => {});
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
